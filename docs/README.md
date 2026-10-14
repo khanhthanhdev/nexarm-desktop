@@ -65,6 +65,16 @@ One task runs at a time, and the page's buttons are disabled while it runs. Prog
 
 The centre position, selected servo and offsets are saved in the settings file under `sync`, both after each task and when you leave a field.
 
+## Calibration page
+
+A guided calibration of the follower arm (connect to the main controller as usual):
+1. **Release.** Turn torque off on all servos so the arm can be moved by hand. The arm drops under its own weight, so a confirmation precedes it. **Torque On** reverses it.
+2. **Set the centre.** Hold every joint at mid position and set the current pose as the centre (command 88 per servo, the same as Calibrate Center on the first page). The page then reads each servo's position offset back; it never computes offsets itself.
+3. **Record range of motion.** While recording, the page polls the joint positions (about 25 Hz) and tracks each joint's min and max. Each joint is checked: *not moved* when it travelled under 50 ticks, *centre outside range* when 2048 is not inside what was swept. Recording stops on disconnect and when you leave the page.
+4. **Profiles.** Save the ranges and offsets under a name as JSON in `<config dir>/NexArm/calibration/`. Load shows them again; **Restore Offsets** writes the loaded offsets back to the servos.
+
+Ranges are a check only. They are not written to the servos or used by the engine, whose calibration files stay identity.
+
 ## Lab pages (the policy loop)
 
 Five more pages run the full imitation-learning loop. They talk to the local **engine**, `lerobot-nexarm-service` from [lerobot-nexarm](../../../lerobot-nexarm/docs/service/README.md), over HTTP and one WebSocket. The original eight pages do not need the engine.

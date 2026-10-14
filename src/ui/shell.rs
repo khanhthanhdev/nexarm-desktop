@@ -3,7 +3,7 @@
 use super::engine_state::EngineState;
 use super::log_panel::LogPanel;
 use super::pages::{
-    ai::AiPage, coord::CoordPage, peripheral::PeripheralPage, servo::ServoPage, servo_adv::ServoAdvPage,
+    ai::AiPage, calib::CalibPage, coord::CoordPage, peripheral::PeripheralPage, servo::ServoPage, servo_adv::ServoAdvPage,
     lab_datasets::LabDatasetsPage, lab_deploy::LabDeployPage, lab_record::LabRecordPage, lab_session::LabSessionPage,
     lab_remote::LabRemotePage, lab_train::LabTrainPage, sync::SyncPage,
     system::SystemPage, teach::TeachPage,
@@ -21,7 +21,7 @@ use gpui_kit::component::{ActiveTheme as _, Disableable as _, Sizable as _, h_fl
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
 
-const NAV_KEYS: [&str; 14] = [
+const NAV_KEYS: [&str; 15] = [
     "tab_servo",
     "tab_coord",
     "tab_peripheral",
@@ -30,6 +30,7 @@ const NAV_KEYS: [&str; 14] = [
     "tab_servo_adv",
     "tab_teach",
     "tab_sync",
+    "tab_calib",
     "tab_lab_session",
     "tab_lab_record",
     "tab_lab_datasets",
@@ -38,7 +39,9 @@ const NAV_KEYS: [&str; 14] = [
     "tab_lab_remote",
 ];
 /// Index of the first Lab page in [`NAV_KEYS`]; Lab pages live in `Shell::lab`.
-const LAB_FIRST: usize = 8;
+const LAB_FIRST: usize = 9;
+/// Index of the Calibration page in [`NAV_KEYS`].
+const CALIB_IX: usize = 8;
 const BAUDS: [u32; 11] = [9600, 19200, 38400, 57600, 76800, 115200, 128000, 250000, 500000, 1000000, 2000000];
 const ACCENT: u32 = 0xFA8F01;
 
@@ -51,6 +54,7 @@ struct Pages {
     servo_adv: Entity<ServoAdvPage>,
     teach: Entity<TeachPage>,
     sync: Entity<SyncPage>,
+    calib: Entity<CalibPage>,
 }
 
 pub struct Shell {
@@ -86,6 +90,7 @@ impl Shell {
             servo_adv: cx.new(|cx| ServoAdvPage::new(app.clone(), window, cx)),
             teach: cx.new(|cx| TeachPage::new(app.clone(), window, cx)),
             sync: cx.new(|cx| SyncPage::new(app.clone(), window, cx)),
+            calib: cx.new(|cx| CalibPage::new(app.clone(), window, cx)),
         };
         let engine = cx.new(|cx| EngineState::new(app.clone(), cx));
         let lab: Vec<AnyView> = vec![
@@ -182,6 +187,9 @@ impl Shell {
     }
 
     fn select_page(&mut self, ix: usize, window: &mut Window, cx: &mut Context<Self>) {
+        if self.nav == CALIB_IX && ix != CALIB_IX {
+            self.pages.calib.update(cx, |p, cx| p.stop_recording(cx));
+        }
         self.nav = ix;
         match ix {
             0 => self.pages.servo.update(cx, |p, cx| p.on_shown(window, cx)),
@@ -258,6 +266,7 @@ impl Shell {
             5 => self.pages.servo_adv.clone().into(),
             6 => self.pages.teach.clone().into(),
             7 => self.pages.sync.clone().into(),
+            CALIB_IX => self.pages.calib.clone().into(),
             i => self.lab[i - LAB_FIRST].clone(),
         }
     }

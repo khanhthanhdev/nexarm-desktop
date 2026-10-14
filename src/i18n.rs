@@ -45,6 +45,7 @@ const LAB_TABLES: &[&str] = &[
     include_str!("../assets/i18n/lab_deploy.json"),
     include_str!("../assets/i18n/lab_coach.json"),
     include_str!("../assets/i18n/lab_remote.json"),
+    include_str!("../assets/i18n/calib.json"),
 ];
 
 fn table() -> &'static Table {
