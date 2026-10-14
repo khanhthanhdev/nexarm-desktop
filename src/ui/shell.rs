@@ -42,6 +42,8 @@ const NAV_KEYS: [&str; 15] = [
 const LAB_FIRST: usize = 9;
 /// Index of the Calibration page in [`NAV_KEYS`].
 const CALIB_IX: usize = 8;
+/// Sidebar section headings: the index of each section's first page and its string key.
+const NAV_GROUPS: [(usize, &str); 3] = [(0, "nav_group_control"), (5, "nav_group_setup"), (LAB_FIRST, "nav_group_lab")];
 const BAUDS: [u32; 11] = [9600, 19200, 38400, 57600, 76800, 115200, 128000, 250000, 500000, 1000000, 2000000];
 const ACCENT: u32 = 0xFA8F01;
 
@@ -274,18 +276,30 @@ impl Shell {
     fn render_nav(&self, cx: &mut Context<Self>) -> impl IntoElement {
         let app = self.app.read(cx);
         let theme = cx.theme();
-        v_flex().gap_1().px_3().children(NAV_KEYS.iter().enumerate().map(|(i, key)| {
+        v_flex().gap_0p5().px_3().children(NAV_KEYS.iter().enumerate().flat_map(|(i, key)| {
             let active = i == self.nav;
-            div()
+            let heading = NAV_GROUPS.iter().find(|(first, _)| *first == i).map(|(_, group)| {
+                div()
+                    .px_2()
+                    .pt_3()
+                    .pb_1()
+                    .text_xs()
+                    .font_weight(FontWeight::BOLD)
+                    .text_color(theme.muted_foreground)
+                    .child(app.t(group).to_uppercase())
+            });
+            let item = div()
                 .id(("nav", i))
-                .px_4()
-                .py_2()
+                .px_3()
+                .py_1p5()
                 .rounded_md()
+                .text_sm()
                 .cursor_pointer()
                 .when(active, |d| d.bg(rgb(ACCENT)).text_color(white()))
                 .when(!active, |d| d.hover(|d| d.bg(theme.secondary_hover)))
                 .child(app.t(key))
-                .on_click(cx.listener(move |this, _, window, cx| this.select_page(i, window, cx)))
+                .on_click(cx.listener(move |this, _, window, cx| this.select_page(i, window, cx)));
+            heading.map(IntoElement::into_any_element).into_iter().chain([item.into_any_element()])
         }))
     }
 
@@ -391,7 +405,7 @@ impl Render for Shell {
             .bg(theme.sidebar)
             .border_r_1()
             .border_color(theme.border)
-            .child(h_flex().justify_center().py_2().child(img(logo).size(px(90.))))
+            .child(h_flex().justify_center().py_2().child(img(logo).size(px(64.))))
             .child(div().id("nav-scroll").flex_1().min_h_0().overflow_y_scroll().child(self.render_nav(cx)))
             .child(self.render_connection(window, cx))
             .child(

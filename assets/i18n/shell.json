@@ -1,0 +1,12 @@
+{
+ "en": {
+  "nav_group_control": "Control",
+  "nav_group_setup": "Setup & calibration",
+  "nav_group_lab": "Lab"
+ },
+ "vi": {
+  "nav_group_control": "Điều khiển",
+  "nav_group_setup": "Cài đặt & hiệu chuẩn",
+  "nav_group_lab": "Lab"
+ }
+}

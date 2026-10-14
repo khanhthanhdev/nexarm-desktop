@@ -11,8 +11,12 @@ fn main() {
         gpui_kit::init(cx);
         Theme::change(ThemeMode::Dark, None, cx);
         let title = tr(Lang::from_code(&Settings::load().lang), "window_title");
+        // Preferred size, shrunk to fit small or highly scaled displays.
+        let screen = cx.primary_display().map(|d| d.bounds().size);
+        let fit = |want: Pixels, have: Option<Pixels>| have.map_or(want, |h| want.min(h * 0.92));
+        let window_size = size(fit(px(1360.), screen.map(|s| s.width)), fit(px(900.), screen.map(|s| s.height)));
         let options = WindowOptions {
-            window_bounds: Some(WindowBounds::Windowed(Bounds::centered(None, size(px(1360.), px(900.)), cx))),
+            window_bounds: Some(WindowBounds::Windowed(Bounds::centered(None, window_size, cx))),
             titlebar: Some(TitlebarOptions { title: Some(title.into()), ..Default::default() }),
             window_min_size: Some(size(px(800.), px(600.))),
             ..Default::default()
