@@ -65,6 +65,33 @@ One task runs at a time, and the page's buttons are disabled while it runs. Prog
 
 The centre position, selected servo and offsets are saved in the settings file under `sync`, both after each task and when you leave a field.
 
+## Lab pages (the policy loop)
+
+Five more pages run the full imitation-learning loop. They talk to the local **engine**, `lerobot-nexarm-service` from [lerobot-nexarm](../../../lerobot-nexarm/docs/service/README.md), over HTTP and one WebSocket. The original eight pages do not need the engine.
+
+| Page         | What it does                                                                                                                                                                      |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lab: Session | Connect to (or start) the engine, edit the robot profile (ports, cameras), check leader and follower alignment, run teleoperation.                                                 |
+| Lab: Record  | Record episodes with pause, next, re-record and change-task controls. Output matches `lerobot-record`, so the existing training scripts accept it.                                 |
+| Lab: Datasets | Browse datasets; view an episode (decoded frame plus joint curves); exclude episodes without deleting anything; delete, split, merge or rename into new datasets; Hub import and upload. |
+| Lab: Train   | Queue training jobs, follow the loss and learning-rate curves and the log, and run on this machine or on a GPU server over SSH.                                                    |
+| Lab: Deploy  | Roll out a checkpoint, evaluate it into an `eval_*` dataset, or coach it (DAgger): take over, hand back, hold, reset to rest, drop a correction.                                    |
+| Lab: Remote  | Host the follower for a remote operator (a station), or drive a remote station with the leader on this machine.                                                                    |
+
+Setup: open **Lab: Session**, press **Connect**. With the default settings the app starts the engine (`lerobot-nexarm-service` on `PATH`; set the start command and working folder in the same panel, for example `uv run lerobot-nexarm-service` in a checkout). It refuses an engine whose API version differs from the app's. Create a robot profile (follower and leader ports, one entry per camera) before recording or deploying. Cameras are per profile; there are no defaults.
+
+**Links during a session.** The engine opens the robot's USB ports, so the app first releases its own connection (the left panel shows Disconnected) and reconnects when the engine reports the session is over, retrying for about 25 s while the COM port re-enumerates. If the follower is connected over WiFi, the same applies to the TCP link.
+
+**Safety.** Every session returns the follower to the pose it started in before torque is released. If the app closes or goes silent for 60 s, the engine stops the session safely. Soft limits and the gripper clamp are enforced by the engine. Zero offsets are fixed in the servos (follower: Servo Advanced page; leader: Synchronizer page); the engine's calibration files are identity.
+
+**GPU servers.** In Lab: Train add a server (host, SSH user, optional key file; keys otherwise stay with your SSH agent), press Test connection, then pick it under "Run on". Prepare a fresh Linux server once with `scripts/nexarm-gpu-bootstrap.sh` from lerobot-nexarm. No port is exposed: the app uses an SSH tunnel to the server's loopback engine.
+
+**Remote teleoperation.** On the station machine open Lab: Remote, set a listen address (your tailnet or LAN address) and press Apply: the engine restarts listening there and requires the generated token. Give the operator the shown address and the token. The operator enters them under "Operator" and presses Connect. Operator tokens are kept in the OS keychain.
+
+**Settings.** `settings.json` gains `engine` (url, start command, working folder, auto start, bind address, token, selected profile), `servers` and `remote_station`. Set `NEXARM_CONFIG_DIR` to use another settings folder.
+
+Hardware checks that have not been run yet are in [`hardware-checklist.md`](hardware-checklist.md).
+
 ## Differences from the original
 
 - Received frames are checksum-checked; frames that fail are shown in red in the HEX log and are not acted on. The short checksum that the leader firmware uses for some replies is accepted.
@@ -83,6 +110,13 @@ The centre position, selected servo and offsets are saved in the settings file u
 ```sh
 cargo test                                         # unit tests + golden bytes
 cargo test --lib keychain -- --ignored             # real OS keychain round trip
+cargo test --test engine_contract                  # routes the client uses exist in the engine's OpenAPI copy
+cargo test --test protocol_vectors                 # CommProtocol bytes shared with the lerobot-nexarm driver
+cargo test --test lab_ui                           # headless UI tests of the Lab pages against a mock engine
+sh scripts/sync-engine-contract ../../lerobot-nexarm    # refresh tests/fixtures/openapi.json and events.json
+sh scripts/sync-protocol-vectors ../../lerobot-nexarm   # refresh tests/fixtures/nexarm_protocol_vectors.json
+# with an engine running (lerobot-nexarm-service) and a dataset such as me/demo under $HF_LEROBOT_HOME:
+cargo test --test engine_live -- --ignored         # the real client against a real engine
 python -I tools/gen_golden_bytes.py                # regenerate tests/golden_bytes.json (needs PyQt5 + ../recovered/NexArm)
 ```
 
