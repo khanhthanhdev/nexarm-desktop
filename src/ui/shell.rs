@@ -281,8 +281,8 @@ impl Shell {
             let heading = NAV_GROUPS.iter().find(|(first, _)| *first == i).map(|(_, group)| {
                 div()
                     .px_2()
-                    .pt_3()
-                    .pb_1()
+                    .pt_2()
+                    .pb_0p5()
                     .text_xs()
                     .font_weight(FontWeight::BOLD)
                     .text_color(theme.muted_foreground)
@@ -291,7 +291,7 @@ impl Shell {
             let item = div()
                 .id(("nav", i))
                 .px_3()
-                .py_1p5()
+                .py_1()
                 .rounded_md()
                 .text_sm()
                 .cursor_pointer()
@@ -303,7 +303,7 @@ impl Shell {
         }))
     }
 
-    fn render_connection(&self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render_connection(&self, window: &mut Window, lang_label: &str, cx: &mut Context<Self>) -> impl IntoElement {
         let app = self.app.read(cx);
         let muted = cx.theme().muted_foreground;
         let caption = |k: &str| div().text_sm().text_color(muted).child(app.t(k));
@@ -366,7 +366,7 @@ impl Shell {
             );
 
         v_flex()
-            .gap_2()
+            .gap_1()
             .px_5()
             .py_2()
             .child(h_flex().gap_2().items_center().child(div().text_color(dot).child("●")).child(status.clone()))
@@ -383,7 +383,15 @@ impl Shell {
                             .checked(connected)
                             .on_click(cx.listener(|this, _, _, cx| this.toggle_connect(cx))),
                     )
-                    .child(div().text_sm().child(app.t("lbl_toggle_on"))),
+                    .child(div().text_sm().child(app.t("lbl_toggle_on")))
+                    .child(div().flex_1())
+                    .child(
+                        Button::new("lang")
+                            .small()
+                            .outline()
+                            .label(lang_label.to_string())
+                            .on_click(cx.listener(|this, _, _, cx| this.app.update(cx, |a, cx| a.toggle_lang(cx)))),
+                    ),
             )
     }
 }
@@ -405,17 +413,9 @@ impl Render for Shell {
             .bg(theme.sidebar)
             .border_r_1()
             .border_color(theme.border)
-            .child(h_flex().justify_center().py_2().child(img(logo).size(px(64.))))
+            .child(h_flex().justify_center().py_1().child(img(logo).size(px(44.))))
             .child(div().id("nav-scroll").flex_1().min_h_0().overflow_y_scroll().child(self.render_nav(cx)))
-            .child(self.render_connection(window, cx))
-            .child(
-                div().px_5().pb_3().child(
-                    Button::new("lang")
-                        .w_full()
-                        .label(lang_label)
-                        .on_click(cx.listener(|this, _, _, cx| this.app.update(cx, |a, cx| a.toggle_lang(cx)))),
-                ),
-            );
+            .child(self.render_connection(window, lang_label, cx));
 
         let content = v_flex()
             .flex_1()
