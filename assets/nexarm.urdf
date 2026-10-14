@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="NexArm0326new">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.0038665 2.0154E-06 0.026241"
+        rpy="0 0 0" />
+      <mass
+        value="0.11262" />
+      <inertia
+        ixx="0.00011436"
+        ixy="-2.127E-09"
+        ixz="2.2436E-06"
+        iyy="9.1966E-05"
+        iyz="3.0965E-09"
+        izz="0.00017896" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="link1">
+    <inertial>
+      <origin
+        xyz="5.6716152818298E-05 -1.86344172289354E-05 0.00418728087306319"
+        rpy="0 0 0" />
+      <mass
+        value="0.0920484315594834" />
+      <inertia
+        ixx="4.05599543416967E-05"
+        ixy="1.65185188703231E-09"
+        ixz="2.44704004347051E-08"
+        iyy="3.90268860828527E-05"
+        iyz="1.63055586039366E-08"
+        izz="6.80315119700401E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/link1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint1"
+    type="revolute">
+    <origin
+      xyz="0.00042383 0 0.071003"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link1" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-2.09"
+      upper="2.09"
+      effort="1000"
+      velocity="0" />
+  </joint>
+  <link
+    name="link2">
+    <inertial>
+      <origin
+        xyz="0.0010467043709268 -0.0373060906216532 0.117940336564004"
+        rpy="0 0 0" />
+      <mass
+        value="0.0590642381074413" />
+      <inertia
+        ixx="0.000126365190348819"
+        ixy="-2.04852919617321E-11"
+        ixz="6.46183559143708E-07"
+        iyy="0.000122570999972299"
+        iyz="-2.23011604572762E-12"
+        izz="1.13949066313735E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/link2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint2"
+    type="revolute">
+    <origin
+      xyz="-0.00041844 0.03728 0.039446"
+      rpy="0 0 0" />
+    <parent
+      link="link1" />
+    <child
+      link="link2" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-2.09"
+      upper="2.09"
+      effort="1000"
+      velocity="0" />
+  </joint>
+  <link
+    name="link3">
+    <inertial>
+      <origin
+        xyz="0.0137516433678302 -0.0196288133010798 -0.0711816402502082"
+        rpy="0 0 0" />
+      <mass
+        value="0.062815962862313" />
+      <inertia
+        ixx="1.41867477534541E-05"
+        ixy="5.59159372224557E-09"
+        ixz="1.6737868665363E-06"
+        iyy="1.59862374357988E-05"
+        iyz="1.07176241107346E-09"
+        izz="5.78320845698204E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/link3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint3"
+    type="revolute">
+    <origin
+      xyz="0.0348 -0.01893 0.22535"
+      rpy="0 0 0" />
+    <parent
+      link="link2" />
+    <child
+      link="link3" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-2.09"
+      upper="2.09"
+      effort="1000"
+      velocity="0" />
+  </joint>
+  <link
+    name="link4">
+    <inertial>
+      <origin
+        xyz="0.024201 -0.018501 -0.004772"
+        rpy="0 0 0" />
+      <mass
+        value="0.014717" />
+      <inertia
+        ixx="4.033E-06"
+        ixy="-4.9295E-09"
+        ixz="1.8768E-07"
+        iyy="3.1677E-06"
+        iyz="-6.8295E-09"
+        izz="4.2652E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/link4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint4"
+    type="revolute">
+    <origin
+      xyz="0.027316 0 -0.14239"
+      rpy="0 0 0" />
+    <parent
+      link="link3" />
+    <child
+      link="link4" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-2.09"
+      upper="2.09"
+      effort="1000"
+      velocity="0" />
+  </joint>
+  <link
+    name="camera_link">
+    <inertial>
+      <origin
+        xyz="-0.012569 0.00066394 -0.00080194"
+        rpy="0 0 0" />
+      <mass
+        value="0.011861" />
+      <inertia
+        ixx="6.7349E-06"
+        ixy="6.6894E-09"
+        ixz="-5.2096E-09"
+        iyy="8.4701E-07"
+        iyz="3.4214E-10"
+        izz="6.2448E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/camera_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/camera_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="camera_joint"
+    type="fixed">
+    <origin
+      xyz="0.064555 -0.019407 0.036497"
+      rpy="0 0 0" />
+    <parent
+      link="link4" />
+    <child
+      link="camera_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="link5">
+    <inertial>
+      <origin
+        xyz="-0.00198440314474035 -1.03724012712192E-08 1.19814488730163E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.00101780721058781" />
+      <inertia
+        ixx="4.40367355590698E-08"
+        ixy="-6.22255583580631E-14"
+        ixz="-1.23825869712916E-10"
+        iyy="2.35859027398144E-08"
+        iyz="6.53467724851782E-13"
+        izz="2.35874457790837E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/link5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/link5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint5"
+    type="revolute">
+    <origin
+      xyz="0.049832 -0.018351 -0.00031098"
+      rpy="0 0 0" />
+    <parent
+      link="link4" />
+    <child
+      link="link5" />
+    <axis
+      xyz="0.99998 0 -0.0060546" />
+    <limit
+      lower="-2.09"
+      upper="2.09"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="gripper_link">
+    <inertial>
+      <origin
+        xyz="-0.0093418045032847 -3.34240037377365E-05 -0.00222341566035766"
+        rpy="0 0 0" />
+      <mass
+        value="0.0200924941074607" />
+      <inertia
+        ixx="1.44654482810758E-05"
+        ixy="-4.85748537654977E-09"
+        ixz="3.08608213029111E-09"
+        iyy="2.40766161157147E-06"
+        iyz="-6.9176574076478E-09"
+        izz="1.33196687098113E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/gripper_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/gripper_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gripper_joint"
+    type="fixed">
+    <origin
+      xyz="0.035032 0 -0.00022027"
+      rpy="0 0 0" />
+    <parent
+      link="link5" />
+    <child
+      link="gripper_link" />
+    <axis
+      xyz="0 0 0" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="gripper_base_link">
+    <inertial>
+      <origin
+        xyz="-0.0019703 9.9566E-10 1.3103E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.0010359" />
+      <inertia
+        ixx="4.7289E-08"
+        ixy="3.4822E-15"
+        ixz="-1.4599E-10"
+        iyy="2.5339E-08"
+        iyz="2.281E-15"
+        izz="2.534E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/gripper_base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/gripper_base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gripper_base_joint"
+    type="revolute">
+    <origin
+      xyz="0.0023084 0 -1.4336E-05"
+      rpy="0 0 0" />
+    <parent
+      link="gripper_link" />
+    <child
+      link="gripper_base_link" />
+    <axis
+      xyz="0.99998 0 -0.0066507" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_jaw_link">
+    <inertial>
+      <origin
+        xyz="0.011947 0.0031957 0.012657"
+        rpy="0 0 0" />
+      <mass
+        value="0.014194" />
+      <inertia
+        ixx="1.4275E-06"
+        ixy="-8.4648E-08"
+        ixz="-1.4624E-08"
+        iyy="1.5892E-06"
+        iyz="1.6325E-09"
+        izz="1.3101E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/right_jaw_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/right_jaw_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_jaw_joint"
+    type="prismatic">
+    <origin
+      xyz="0.0081154 -0.038561 -0.013453"
+      rpy="0 0 0" />
+    <parent
+      link="gripper_link" />
+    <child
+      link="right_jaw_link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_jaw_link">
+    <inertial>
+      <origin
+        xyz="0.010954 -0.0031957 0.013987"
+        rpy="0 0 0" />
+      <mass
+        value="0.014194" />
+      <inertia
+        ixx="1.4279E-06"
+        ixy="8.4662E-08"
+        ixz="1.3039E-08"
+        iyy="1.5892E-06"
+        iyz="5.0959E-10"
+        izz="1.3098E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/left_jaw_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://NexArm0326new/meshes/left_jaw_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_jaw_joint"
+    type="prismatic">
+    <origin
+      xyz="0.0091166 0.038561 -0.01346"
+      rpy="0 0 0" />
+    <parent
+      link="gripper_link" />
+    <child
+      link="left_jaw_link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>

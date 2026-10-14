@@ -1,0 +1,345 @@
+[
+ {
+  "name": "read_positions",
+  "replies": [
+   [
+    "FF FF FF 02 60 9E",
+    [
+     "FF FF FF 0E 60 00 08 E8 03 FB FF FF 0F 00 00 B8 0B D4"
+    ]
+   ]
+  ],
+  "tx": [
+   "FF FF FF 02 60 9E"
+  ]
+ },
+ {
+  "name": "read_positions_short_chk",
+  "replies": [
+   [
+    "FF FF FF 02 60 9E",
+    [
+     "FF FF FF 0E 60 00 08 E8 03 FB FF FF 0F 00 00 B8 0B 92"
+    ]
+   ]
+  ],
+  "tx": [
+   "FF FF FF 02 60 9E"
+  ]
+ },
+ {
+  "name": "torque_on_short_chk",
+  "replies": [
+   [
+    "FF FF FF 03 62 01 9A",
+    [
+     "FF FF FF 03 62 01 9B"
+    ]
+   ]
+  ],
+  "tx": [
+   "FF FF FF 03 62 01 9A",
+   "FF FF FE 04 03 28 01 D1"
+  ]
+ },
+ {
+  "name": "read_positions_silent",
+  "replies": [],
+  "tx": [
+   "FF FF FF 02 60 9E",
+   "FF FF FF 02 60 9E"
+  ]
+ },
+ {
+  "name": "recover_main_ok",
+  "replies": [
+   [
+    "FF FF FF 04 4A FE 00 B4",
+    [
+     "FF FF FF 05 4A FE 00 05 AE"
+    ]
+   ]
+  ],
+  "tx": [
+   "FF FF FF 04 4A FE 00 B4"
+  ]
+ },
+ {
+  "name": "recover_sys_ok",
+  "replies": [
+   [
+    "FF FF FF 04 4A FE 00 B4",
+    [
+     "FF FF FF 05 4A FE 00 00 B3"
+    ]
+   ],
+   [
+    "FF FF FF 02 63 9B",
+    [
+     "FF FF FF 04 63 00 3F 5A"
+    ]
+   ]
+  ],
+  "tx": [
+   "FF FF FF 04 4A FE 00 B4",
+   "FF FF FF 02 63 9B"
+  ]
+ },
+ {
+  "name": "recover_silent",
+  "replies": [
+   [
+    "FF FF FF 03 49 02 B2",
+    [
+     "FF FF FF 04 49 02 00 B1"
+    ]
+   ],
+   [
+    "FF FF 04 04 02 06 01 EE",
+    [
+     "FF FF 04 03 00 03 F5"
+    ]
+   ]
+  ],
+  "tx": [
+   "FF FF FF 04 4A FE 00 B4",
+   "FF FF FF 02 63 9B",
+   "FF FF FE 04 03 06 00 F4",
+   "FF FF 01 04 03 06 00 F1",
+   "FF FF 02 04 03 06 00 F0",
+   "FF FF 03 04 03 06 00 EF",
+   "FF FF 04 04 03 06 00 EE",
+   "FF FF 05 04 03 06 00 ED",
+   "FF FF 06 04 03 06 00 EC",
+   "FF FF FF 03 49 01 B3",
+   "FF FF 01 04 02 06 01 F1",
+   "FF FF FF 03 49 02 B2",
+   "FF FF FF 03 49 03 B1",
+   "FF FF 03 04 02 06 01 EF",
+   "FF FF FF 03 49 04 B0",
+   "FF FF 04 04 02 06 01 EE",
+   "FF FF FF 03 49 05 AF",
+   "FF FF 05 04 02 06 01 ED",
+   "FF FF FF 03 49 06 AE",
+   "FF FF 06 04 02 06 01 EC"
+  ]
+ },
+ {
+  "name": "center_all",
+  "replies": [],
+  "tx": [
+   "FF FF FF 0E 61 00 08 00 08 00 08 00 08 00 08 00 08 61",
+   "FF FF FE 34 83 29 07 01 00 00 08 00 00 00 00 02 00 00 08 00 00 00 00 03 00 00 08 00 00 00 00 04 00 00 08 00 00 00 00 05 00 00 08 00 00 00 00 06 00 00 08 00 00 00 00 D5"
+  ]
+ },
+ {
+  "name": "center_all_clamped",
+  "replies": [],
+  "tx": [
+   "FF FF FF 0E 61 FF 0F FF 0F FF 0F FF 0F FF 0F FF 0F 3D",
+   "FF FF FE 34 83 29 07 01 00 FF 0F 00 00 00 00 02 00 FF 0F 00 00 00 00 03 00 FF 0F 00 00 00 00 04 00 FF 0F 00 00 00 00 05 00 FF 0F 00 00 00 00 06 00 FF 0F 00 00 00 00 B1"
+  ]
+ },
+ {
+  "name": "center_one",
+  "replies": [],
+  "tx": [
+   "FF FF 03 0A 03 29 00 E8 03 00 00 00 00 DB"
+  ]
+ },
+ {
+  "name": "calibrate_all",
+  "replies": [],
+  "tx": [
+   "FF FF 01 04 03 28 80 4F",
+   "FF FF 02 04 03 28 80 4E",
+   "FF FF 03 04 03 28 80 4D",
+   "FF FF 04 04 03 28 80 4C",
+   "FF FF 05 04 03 28 80 4B",
+   "FF FF 06 04 03 28 80 4A"
+  ]
+ },
+ {
+  "name": "calibrate_one",
+  "replies": [],
+  "tx": [
+   "FF FF 02 04 03 28 80 4E"
+  ]
+ },
+ {
+  "name": "read_offset_reply",
+  "replies": [
+   [
+    "FF FF 05 04 02 1F 02 D3",
+    [
+     "FF FF FF 1A 0B 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 DB",
+     "FF FF 05 04 00 64 08 8A"
+    ]
+   ]
+  ],
+  "tx": [
+   "FF FF 05 04 02 1F 02 D3"
+  ]
+ },
+ {
+  "name": "read_all_offsets",
+  "replies": [],
+  "tx": [
+   "FF FF 01 04 02 1F 02 D7",
+   "FF FF 01 04 02 1F 02 D7",
+   "FF FF 02 04 02 1F 02 D6",
+   "FF FF 02 04 02 1F 02 D6",
+   "FF FF 03 04 02 1F 02 D5",
+   "FF FF 03 04 02 1F 02 D5",
+   "FF FF 04 04 02 1F 02 D4",
+   "FF FF 04 04 02 1F 02 D4",
+   "FF FF 05 04 02 1F 02 D3",
+   "FF FF 05 04 02 1F 02 D3",
+   "FF FF 06 04 02 1F 02 D2",
+   "FF FF 06 04 02 1F 02 D2"
+  ]
+ },
+ {
+  "name": "write_all_offsets",
+  "replies": [],
+  "tx": [
+   "FF FF 01 05 03 1F FF 0F C9",
+   "FF FF 01 04 02 1F 02 D7",
+   "FF FF 01 04 02 1F 02 D7",
+   "FF FF 02 05 03 1F 01 08 CD",
+   "FF FF 02 04 02 1F 02 D6",
+   "FF FF 02 04 02 1F 02 D6",
+   "FF FF 03 05 03 1F 00 00 D5",
+   "FF FF 03 04 02 1F 02 D5",
+   "FF FF 03 04 02 1F 02 D5",
+   "FF FF 04 05 03 1F 01 00 D3",
+   "FF FF 04 04 02 1F 02 D4",
+   "FF FF 04 04 02 1F 02 D4",
+   "FF FF 05 05 03 1F FF 07 CD",
+   "FF FF 05 04 02 1F 02 D3",
+   "FF FF 05 04 02 1F 02 D3",
+   "FF FF 06 05 03 1F FF 0F C4",
+   "FF FF 06 04 02 1F 02 D2",
+   "FF FF 06 04 02 1F 02 D2"
+  ]
+ },
+ {
+  "name": "zero_all_offsets",
+  "replies": [],
+  "tx": [
+   "FF FF 01 05 03 1F 00 00 D7",
+   "FF FF 01 04 02 1F 02 D7",
+   "FF FF 01 04 02 1F 02 D7",
+   "FF FF 02 05 03 1F 00 00 D6",
+   "FF FF 02 04 02 1F 02 D6",
+   "FF FF 02 04 02 1F 02 D6",
+   "FF FF 03 05 03 1F 00 00 D5",
+   "FF FF 03 04 02 1F 02 D5",
+   "FF FF 03 04 02 1F 02 D5",
+   "FF FF 04 05 03 1F 00 00 D4",
+   "FF FF 04 04 02 1F 02 D4",
+   "FF FF 04 04 02 1F 02 D4",
+   "FF FF 05 05 03 1F 00 00 D3",
+   "FF FF 05 04 02 1F 02 D3",
+   "FF FF 05 04 02 1F 02 D3",
+   "FF FF 06 05 03 1F 00 00 D2",
+   "FF FF 06 04 02 1F 02 D2",
+   "FF FF 06 04 02 1F 02 D2"
+  ]
+ },
+ {
+  "name": "zero_offset_row",
+  "replies": [],
+  "tx": [
+   "FF FF 06 05 03 1F 00 00 D2",
+   "FF FF 06 04 02 1F 02 D2",
+   "FF FF 06 04 02 1F 02 D2"
+  ]
+ },
+ {
+  "name": "torque_on",
+  "replies": [],
+  "tx": [
+   "FF FF FF 03 62 01 9A",
+   "FF FF FE 04 03 28 01 D1"
+  ]
+ },
+ {
+  "name": "torque_off_reply",
+  "replies": [
+   [
+    "FF FF FF 03 62 00 9B",
+    [
+     "FF FF FF 03 62 00 9B"
+    ]
+   ]
+  ],
+  "tx": [
+   "FF FF FF 03 62 00 9B",
+   "FF FF FE 04 03 28 00 D2"
+  ]
+ },
+ {
+  "name": "write_offset_-2047",
+  "replies": [],
+  "tx": [
+   "FF FF 04 05 03 1F FF 0F C6",
+   "FF FF 04 04 02 1F 02 D4",
+   "FF FF 04 04 02 1F 02 D4"
+  ]
+ },
+ {
+  "name": "write_offset_-1",
+  "replies": [],
+  "tx": [
+   "FF FF 04 05 03 1F 01 08 CB",
+   "FF FF 04 04 02 1F 02 D4",
+   "FF FF 04 04 02 1F 02 D4"
+  ]
+ },
+ {
+  "name": "write_offset_0",
+  "replies": [],
+  "tx": [
+   "FF FF 04 05 03 1F 00 00 D4",
+   "FF FF 04 04 02 1F 02 D4",
+   "FF FF 04 04 02 1F 02 D4"
+  ]
+ },
+ {
+  "name": "write_offset_1",
+  "replies": [],
+  "tx": [
+   "FF FF 04 05 03 1F 01 00 D3",
+   "FF FF 04 04 02 1F 02 D4",
+   "FF FF 04 04 02 1F 02 D4"
+  ]
+ },
+ {
+  "name": "write_offset_2047",
+  "replies": [],
+  "tx": [
+   "FF FF 04 05 03 1F FF 07 CE",
+   "FF FF 04 04 02 1F 02 D4",
+   "FF FF 04 04 02 1F 02 D4"
+  ]
+ },
+ {
+  "name": "write_offset_-3000",
+  "replies": [],
+  "tx": [
+   "FF FF 04 05 03 1F FF 0F C6",
+   "FF FF 04 04 02 1F 02 D4",
+   "FF FF 04 04 02 1F 02 D4"
+  ]
+ },
+ {
+  "name": "write_offset_3000",
+  "replies": [],
+  "tx": [
+   "FF FF 04 05 03 1F FF 07 CE",
+   "FF FF 04 04 02 1F 02 D4",
+   "FF FF 04 04 02 1F 02 D4"
+  ]
+ }
+]

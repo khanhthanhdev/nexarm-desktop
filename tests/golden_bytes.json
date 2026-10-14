@@ -1,0 +1,482 @@
+[
+ {
+  "name": "coordinate_set_home",
+  "hex": "FF FF FF 10 08 00 00 C8 00 00 00 C8 00 00 00 00 00 E8 03 6D"
+ },
+ {
+  "name": "coordinate_set_neg",
+  "hex": "FF FF FF 10 08 83 FF 6A FF 4B 00 1E 00 A6 FF 2D 00 C4 09 F5"
+ },
+ {
+  "name": "coordinate_set_frac",
+  "hex": "FF FF FF 10 08 C7 01 01 00 FF FF 00 00 00 00 00 00 00 00 21"
+ },
+ {
+  "name": "coordinate_set_negfrac",
+  "hex": "FF FF FF 10 08 FD FF 00 00 00 00 00 00 00 00 00 00 FF FF EE"
+ },
+ {
+  "name": "move_inc_x",
+  "hex": "FF FF FF 10 32 0A 00 00 00 00 00 00 00 00 00 00 00 C8 00 EC"
+ },
+ {
+  "name": "move_inc_y",
+  "hex": "FF FF FF 10 32 00 00 E7 FF 00 00 00 00 00 00 00 00 C8 00 10"
+ },
+ {
+  "name": "move_inc_z",
+  "hex": "FF FF FF 10 32 00 00 00 00 01 00 00 00 00 00 00 00 C8 00 F5"
+ },
+ {
+  "name": "move_inc_pitch",
+  "hex": "FF FF FF 10 32 00 00 00 00 00 00 9C FF 00 00 00 00 C8 00 5B"
+ },
+ {
+  "name": "move_inc_roll",
+  "hex": "FF FF FF 10 32 00 00 00 00 00 00 00 00 64 00 00 00 C8 00 92"
+ },
+ {
+  "name": "move_inc_claw",
+  "hex": "FF FF FF 10 32 00 00 00 00 00 00 00 00 00 00 FB FF C8 00 FC"
+ },
+ {
+  "name": "arm_reset",
+  "hex": "FF FF FF 04 36 E8 03 DB"
+ },
+ {
+  "name": "get_cur_coords",
+  "hex": "FF FF FF 02 0B F3"
+ },
+ {
+  "name": "read_all_servos",
+  "hex": "FF FF FF 02 37 C7"
+ },
+ {
+  "name": "buzzer_basic",
+  "hex": "FF FF FF 0E 09 64 00 00 00 64 00 00 00 03 00 D0 07 47"
+ },
+ {
+  "name": "buzzer_big",
+  "hex": "FF FF FF 0E 09 70 11 01 00 01 00 00 00 FF FF A0 0F B9"
+ },
+ {
+  "name": "firmware_version",
+  "hex": "FF FF FF 02 01 FD"
+ },
+ {
+  "name": "battery",
+  "hex": "FF FF FF 02 02 FC"
+ },
+ {
+  "name": "bt_mode_ps3",
+  "hex": "FF FF FF 03 3E 01 BE"
+ },
+ {
+  "name": "bt_mode_ble",
+  "hex": "FF FF FF 03 3E 00 BF"
+ },
+ {
+  "name": "factory_reset",
+  "hex": "FF FF FF 02 54 AA"
+ },
+ {
+  "name": "move_acc",
+  "hex": "FF FF FF 03 38 C8 FD"
+ },
+ {
+  "name": "get_coord_limits",
+  "hex": "FF FF FF 02 50 AE"
+ },
+ {
+  "name": "set_coord_limits",
+  "hex": "FF FF FF 1A 4F D4 FE 2C 01 D4 FE 2C 01 CE FF 90 01 7C FC 84 03 4C FF B4 00 00 00 64 00 D9"
+ },
+ {
+  "name": "get_chassis",
+  "hex": "FF FF FF 02 56 A8"
+ },
+ {
+  "name": "set_chassis",
+  "hex": "FF FF FF 14 55 01 00 00 82 42 00 80 16 43 00 80 F0 42 00 00 00 00 50 F7"
+ },
+ {
+  "name": "get_kinematics",
+  "hex": "FF FF FF 02 40 BE"
+ },
+ {
+  "name": "set_kinematics",
+  "hex": "FF FF FF 26 3F 00 00 D2 42 00 00 C5 42 00 00 44 41 00 00 20 43 00 00 60 C0 00 00 96 42 00 00 A0 41 00 00 06 42 00 00 B0 42 85"
+ },
+ {
+  "name": "servo_move_mid",
+  "hex": "FF FF 01 0A 03 29 32 00 08 00 00 E8 03 A3"
+ },
+ {
+  "name": "servo_move_edge",
+  "hex": "FF FF 06 0A 03 29 FF FF 0F 00 00 48 0D 61"
+ },
+ {
+  "name": "servo_torque_on",
+  "hex": "FF FF 03 04 03 28 01 CC"
+ },
+ {
+  "name": "servo_torque_off",
+  "hex": "FF FF 04 04 03 28 00 CC"
+ },
+ {
+  "name": "servo_read_position",
+  "hex": "FF FF 02 04 02 38 02 BD"
+ },
+ {
+  "name": "set_torque_all_off",
+  "hex": "FF FF FF 03 3D 00 C0"
+ },
+ {
+  "name": "set_torque_all_on",
+  "hex": "FF FF FF 03 3D 01 BF"
+ },
+ {
+  "name": "get_real_joint_angles",
+  "hex": "FF FF FF 02 41 BD"
+ },
+ {
+  "name": "action_group_run",
+  "hex": "FF FF FF 03 03 07 F3"
+ },
+ {
+  "name": "action_group_erase",
+  "hex": "FF FF FF 03 17 07 DF"
+ },
+ {
+  "name": "action_group_stop",
+  "hex": "FF FF FF 02 04 FA"
+ },
+ {
+  "name": "action_download_1",
+  "hex": "FF FF FF 2C 05 03 02 01 06 E8 03 01 00 08 00 0A 00 02 DC 05 0A 91 02 03 28 0A 00 92 06 04 AE 04 05 30 00 05 B8 0B 00 76 04 06 00 08 FF 0A 00 34"
+ },
+ {
+  "name": "action_download_2",
+  "hex": "FF FF FF 2C 05 03 02 02 06 2C 01 01 64 00 00 48 0D 02 A0 0F 00 48 0D 03 28 0A 01 0A 00 04 D6 04 00 A0 00 05 00 08 00 48 0D 06 00 00 00 48 0D 5A"
+ },
+ {
+  "name": "set_servo_id",
+  "hex": "FF FF FF 04 34 01 05 C2"
+ },
+ {
+  "name": "set_servo_mode",
+  "hex": "FF FF FF 04 35 02 03 C2"
+ },
+ {
+  "name": "set_pos_offset_pos",
+  "hex": "FF FF FF 05 39 01 2C 01 94"
+ },
+ {
+  "name": "set_pos_offset_neg",
+  "hex": "FF FF FF 05 39 06 01 F8 C3"
+ },
+ {
+  "name": "set_pos_offset_clamp",
+  "hex": "FF FF FF 05 39 02 01 F8 C7"
+ },
+ {
+  "name": "get_pos_offset",
+  "hex": "FF FF FF 03 3A 04 BF"
+ },
+ {
+  "name": "cali_pos",
+  "hex": "FF FF FF 03 58 03 A2"
+ },
+ {
+  "name": "set_pid",
+  "hex": "FF FF FF 08 3B 02 20 00 10 E8 03 A0"
+ },
+ {
+  "name": "get_pid",
+  "hex": "FF FF FF 03 3C 02 BF"
+ },
+ {
+  "name": "read_overload",
+  "hex": "FF FF FF 03 47 05 B1"
+ },
+ {
+  "name": "set_overload",
+  "hex": "FF FF FF 06 48 05 50 C8 19 7C"
+ },
+ {
+  "name": "read_baud",
+  "hex": "FF FF FF 03 49 01 B3"
+ },
+ {
+  "name": "set_baud",
+  "hex": "FF FF FF 04 4A 01 00 B1"
+ },
+ {
+  "name": "set_baud_all",
+  "hex": "FF FF FF 04 4A FE 03 B1"
+ },
+ {
+  "name": "read_max_torque",
+  "hex": "FF FF FF 03 4B 06 AC"
+ },
+ {
+  "name": "set_max_torque",
+  "hex": "FF FF FF 05 4C 06 E8 03 BE"
+ },
+ {
+  "name": "conveyor_fwd",
+  "hex": "FF FF FF 03 10 32 BB"
+ },
+ {
+  "name": "conveyor_rev",
+  "hex": "FF FF FF 03 10 9C 51"
+ },
+ {
+  "name": "conveyor_stop",
+  "hex": "FF FF FF 03 10 00 ED"
+ },
+ {
+  "name": "stepper_reset",
+  "hex": "FF FF FF 02 11 ED"
+ },
+ {
+  "name": "stepper_run_pos",
+  "hex": "FF FF FF 06 13 80 0C 00 00 5B"
+ },
+ {
+  "name": "stepper_run_neg",
+  "hex": "FF FF FF 06 13 C0 1D FE FF 0D"
+ },
+ {
+  "name": "stepper_div_1",
+  "hex": "FF FF FF 03 12 00 EB"
+ },
+ {
+  "name": "stepper_div_2",
+  "hex": "FF FF FF 03 12 01 EA"
+ },
+ {
+  "name": "stepper_div_4",
+  "hex": "FF FF FF 03 12 02 E9"
+ },
+ {
+  "name": "stepper_div_8",
+  "hex": "FF FF FF 03 12 03 E8"
+ },
+ {
+  "name": "stepper_div_16",
+  "hex": "FF FF FF 03 12 07 E4"
+ },
+ {
+  "name": "stepper_div_32",
+  "hex": "FF FF FF 03 12 07 E4"
+ },
+ {
+  "name": "espnow_on",
+  "hex": "FF FF FF 03 21 01 DB"
+ },
+ {
+  "name": "espnow_off",
+  "hex": "FF FF FF 03 21 00 DC"
+ },
+ {
+  "name": "espnow_scan",
+  "hex": "FF FF FF 02 57 A7"
+ },
+ {
+  "name": "espnow_channel",
+  "hex": "FF FF FF 03 1E 0B D4"
+ },
+ {
+  "name": "espnow_acc",
+  "hex": "FF FF FF 03 1F 1E C0"
+ },
+ {
+  "name": "peer_mac",
+  "hex": "FF FF FF 08 24 24 6F 28 AA 0B FF 65"
+ },
+ {
+  "name": "ps3_mac",
+  "hex": "FF FF FF 08 53 00 1A 7D DA 71 13 B0"
+ },
+ {
+  "name": "mecanum_up_left",
+  "hex": "FF FF FF 05 22 00 CE 32 D9"
+ },
+ {
+  "name": "mecanum_strafe_l_r",
+  "hex": "FF FF FF 05 22 00 00 00 D9"
+ },
+ {
+  "name": "mecanum_all_neg",
+  "hex": "FF FF FF 05 22 CE CE CE 6F"
+ },
+ {
+  "name": "tank_down",
+  "hex": "FF FF FF 04 23 CE 00 0B"
+ },
+ {
+  "name": "tank_right",
+  "hex": "FF FF FF 04 23 00 CE 0B"
+ },
+ {
+  "name": "motor_stop",
+  "hex": "FF FF FF 02 0E F0"
+ },
+ {
+  "name": "single_motor",
+  "hex": "FF FF FF 04 0D 03 B5 37"
+ },
+ {
+  "name": "multi_motors",
+  "hex": "FF FF FF 06 0F 64 9C 00 25 C6"
+ },
+ {
+  "name": "color_track_red",
+  "hex": "FF FF FF 04 28 01 01 D2"
+ },
+ {
+  "name": "color_track_stop",
+  "hex": "FF FF FF 04 28 00 00 D4"
+ },
+ {
+  "name": "face_start",
+  "hex": "FF FF FF 03 29 01 D3"
+ },
+ {
+  "name": "face_stop",
+  "hex": "FF FF FF 03 29 00 D4"
+ },
+ {
+  "name": "apriltag_track_start",
+  "hex": "FF FF FF 03 2B 01 D1"
+ },
+ {
+  "name": "apriltag_track_stop",
+  "hex": "FF FF FF 03 2B 00 D2"
+ },
+ {
+  "name": "apriltag_grab_start",
+  "hex": "FF FF FF 03 2C 01 D0"
+ },
+ {
+  "name": "apriltag_grab_stop",
+  "hex": "FF FF FF 03 2C 00 D1"
+ },
+ {
+  "name": "garbage_start",
+  "hex": "FF FF FF 03 30 01 CC"
+ },
+ {
+  "name": "garbage_stop",
+  "hex": "FF FF FF 03 30 00 CD"
+ },
+ {
+  "name": "llm_start",
+  "hex": "FF FF FF 03 2F 01 CD"
+ },
+ {
+  "name": "llm_stop",
+  "hex": "FF FF FF 03 2F 00 CE"
+ },
+ {
+  "name": "gesture_start",
+  "hex": "FF FF FF 03 51 01 AB"
+ },
+ {
+  "name": "gesture_stop",
+  "hex": "FF FF FF 03 51 00 AC"
+ },
+ {
+  "name": "color_grab_blue",
+  "hex": "FF FF FF 04 2E 01 03 CA"
+ },
+ {
+  "name": "color_grab_stop",
+  "hex": "FF FF FF 03 2E 00 CF"
+ },
+ {
+  "name": "calibration_1",
+  "hex": "FF FF FF 03 31 01 CB"
+ },
+ {
+  "name": "calibration_2",
+  "hex": "FF FF FF 03 31 02 CA"
+ },
+ {
+  "name": "calibration_3",
+  "hex": "FF FF FF 03 31 03 C9"
+ },
+ {
+  "name": "calibration_0",
+  "hex": "FF FF FF 03 31 00 CC"
+ },
+ {
+  "name": "apriltag_offset",
+  "hex": "FF FF FF 10 2D 00 00 48 41 00 00 50 C0 00 00 C8 42 00 00 20"
+ },
+ {
+  "name": "action_edit_enter",
+  "hex": "FF FF FF 02 78 86"
+ },
+ {
+  "name": "action_edit_exit",
+  "hex": "FF FF FF 02 79 85"
+ },
+ {
+  "name": "action_edit_start",
+  "hex": "FF FF FF 02 7A 84"
+ },
+ {
+  "name": "action_edit_stop",
+  "hex": "FF FF FF 02 7B 83"
+ },
+ {
+  "name": "action_edit_play",
+  "hex": "FF FF FF 02 7C 82"
+ },
+ {
+  "name": "action_edit_play_stop",
+  "hex": "FF FF FF 02 7D 81"
+ },
+ {
+  "name": "action_edit_clear",
+  "hex": "FF FF FF 02 7E 80"
+ },
+ {
+  "name": "action_edit_query",
+  "hex": "FF FF FF 02 7F 7F"
+ },
+ {
+  "name": "sync_teach_enter",
+  "hex": "FF FF FF 02 80 7E"
+ },
+ {
+  "name": "sync_teach_exit",
+  "hex": "FF FF FF 02 81 7D"
+ },
+ {
+  "name": "sync_teach_rec_start",
+  "hex": "FF FF FF 02 82 7C"
+ },
+ {
+  "name": "sync_teach_rec_stop",
+  "hex": "FF FF FF 02 83 7B"
+ },
+ {
+  "name": "sync_teach_play",
+  "hex": "FF FF FF 02 84 7A"
+ },
+ {
+  "name": "sync_teach_play_stop",
+  "hex": "FF FF FF 02 85 79"
+ },
+ {
+  "name": "sync_teach_clear",
+  "hex": "FF FF FF 02 86 78"
+ },
+ {
+  "name": "sync_teach_query",
+  "hex": "FF FF FF 02 87 77"
+ }
+]

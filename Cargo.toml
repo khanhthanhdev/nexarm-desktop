@@ -1,0 +1,22 @@
+[package]
+name = "nexarm-desktop"
+version = "0.1.0"
+edition = "2024"
+description = "Cross-platform native desktop controller for the NexArm robot arm (GPUI)"
+
+[dependencies]
+anyhow = "1"
+chrono = "0.4"
+dirs = "6"
+flume = "0.11"
+glam = "0.30"
+gpui-kit = "0.7.3"
+keyring = "4.2"
+rerun = { version = "0.38.1", default-features = false, features = ["sdk"] }
+roxmltree = "0.21"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serialport = "4.10"
+
+[profile.dev.package."*"]
+opt-level = 2
