@@ -43,6 +43,7 @@ const LAB_TABLES: &[&str] = &[
     include_str!("../assets/i18n/lab_train.json"),
     include_str!("../assets/i18n/lab_servers.json"),
     include_str!("../assets/i18n/lab_deploy.json"),
+    include_str!("../assets/i18n/lab_coach.json"),
 ];
 
 fn table() -> &'static Table {
@@ -121,6 +122,28 @@ mod tests {
         assert!(used.len() > 10, "found only {} lab keys", used.len());
         let t = table();
         for key in used {
+            for lang in ["en", "vi"] {
+                assert!(t[lang].contains_key(&key), "missing {lang} string for {key}");
+            }
+        }
+    }
+
+    /// Keys the Lab pages build at run time (`format!("lab_dep_mode_{mode}")`) must exist too.
+    #[test]
+    fn dynamically_built_lab_keys_exist() {
+        let t = table();
+        let mut keys = Vec::new();
+        for mode in ["rollout", "eval", "coaching"] {
+            keys.push(format!("lab_dep_mode_{mode}"));
+            keys.push(format!("lab_dep_start_{mode}"));
+        }
+        for phase in ["autonomous", "paused", "correcting"] {
+            keys.push(format!("lab_coach_phase_{phase}"));
+        }
+        for phase in ["preparing", "recording", "paused", "saving", "resetting", "finished"] {
+            keys.push(format!("lab_rec_phase_{phase}"));
+        }
+        for key in keys {
             for lang in ["en", "vi"] {
                 assert!(t[lang].contains_key(&key), "missing {lang} string for {key}");
             }

@@ -510,7 +510,8 @@ impl EngineState {
                 }
             }
             EngineEvent::Disconnected => self.check_engine_gone(cx),
-            EngineEvent::JobsChanged { .. } | EngineEvent::JobProgress { .. } | EngineEvent::CoachingState { .. } => {}
+            EngineEvent::CoachingState { .. } => self.refresh_session(cx),
+            EngineEvent::JobsChanged { .. } | EngineEvent::JobProgress { .. } => {}
         }
         cx.emit(EngineNote::Event(ev));
         cx.notify();
