@@ -1,6 +1,6 @@
 # NexArm Desktop
 
-A native, cross-platform controller for the NexArm robot arm, written in Rust with [GPUI](https://www.gpui.rs/) (`gpui-kit` 0.7.3). It replaces the original PyQt5 `NexArm.exe` and keeps all 7 of its pages (Action Group, Coordinates, Peripheral & Chassis, System, AI, Servo Advanced, Teach Edit) and its HEX and text log. Its UI is in English and Vietnamese. An 8th page, **Synchronizer**, replaces the separate `sync_host_gui.exe` service tool. The wire protocol is byte-identical to the original. The protocol and the original client are documented in [`../../docs/nexarm-gui-reverse-engineering.md`](../../docs/nexarm-gui-reverse-engineering.md).
+A native, cross-platform controller for the NexArm robot arm, written in Rust with [GPUI](https://www.gpui.rs/) (`gpui-kit` 0.7.3). It replaces the original PyQt5 `NexArm.exe` and keeps all 7 of its pages (Action Group, Coordinates, Peripheral & Chassis, System, AI, Servo Advanced, Teach Edit) and its HEX and text log. Its UI is in English and Vietnamese. An 8th page, **Synchronizer**, replaces the separate `sync_host_gui.exe` service tool, and a 9th, **Calibration**, guides the follower arm's centre and range-of-motion calibration. The wire protocol is byte-identical to the original. The protocol and the original client are documented in [`../../docs/nexarm-gui-reverse-engineering.md`](../../docs/nexarm-gui-reverse-engineering.md).
 
 ## Build and run
 
@@ -65,6 +65,16 @@ One task runs at a time, and the page's buttons are disabled while it runs. Prog
 
 The centre position, selected servo and offsets are saved in the settings file under `sync`, both after each task and when you leave a field.
 
+## Calibration page
+
+A guided calibration of the follower arm (connect to the main controller as usual):
+1. **Release.** Turn torque off on all servos so the arm can be moved by hand. The arm drops under its own weight, so a confirmation precedes it. **Torque On** reverses it.
+2. **Set the centre.** Hold every joint at mid position and set the current pose as the centre (command 88 per servo, the same as Calibrate Center on the first page). The page then reads each servo's position offset back; it never computes offsets itself.
+3. **Record range of motion.** While recording, the page polls the joint positions (about 25 Hz) and tracks each joint's min and max. Each joint is checked: *not moved* when it travelled under 50 ticks, *centre outside range* when 2048 is not inside what was swept. Recording stops on disconnect and when you leave the page.
+4. **Profiles.** Save the ranges and offsets under a name as JSON in `<config dir>/NexArm/calibration/`. Load shows them again; **Restore Offsets** writes the loaded offsets back to the servos.
+
+Ranges are a check only. They are not written to the servos or used by the engine, whose calibration files stay identity.
+
 ## Lab pages (the policy loop)
 
 Five more pages run the full imitation-learning loop. They talk to the local **engine**, `lerobot-nexarm-service` from [lerobot-nexarm](../../../lerobot-nexarm/docs/service/README.md), over HTTP and one WebSocket. The original eight pages do not need the engine.
@@ -82,7 +92,7 @@ Setup: open **Lab: Session**, press **Connect**. With the default settings the a
 
 **Links during a session.** The engine opens the robot's USB ports, so the app first releases its own connection (the left panel shows Disconnected) and reconnects when the engine reports the session is over, retrying for about 25 s while the COM port re-enumerates. If the follower is connected over WiFi, the same applies to the TCP link.
 
-**Safety.** Every session returns the follower to the pose it started in before torque is released. If the app closes or goes silent for 60 s, the engine stops the session safely. Soft limits and the gripper clamp are enforced by the engine. Zero offsets are fixed in the servos (follower: Servo Advanced page; leader: Synchronizer page); the engine's calibration files are identity.
+**Safety.** Every session returns the follower to the pose it started in before torque is released. If the app closes or goes silent for 60 s, the engine stops the session safely. Soft limits and the gripper clamp are enforced by the engine. Zero offsets are fixed in the servos (follower: Servo Advanced or Calibration page; leader: Synchronizer page); the engine's calibration files are identity.
 
 **GPU servers.** In Lab: Train add a server (host, SSH user, optional key file; keys otherwise stay with your SSH agent), press Test connection, then pick it under "Run on". Prepare a fresh Linux server once with `scripts/nexarm-gpu-bootstrap.sh` from lerobot-nexarm. No port is exposed: the app uses an SSH tunnel to the server's loopback engine.
 

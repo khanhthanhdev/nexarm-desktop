@@ -6,6 +6,7 @@ pub mod peripheral;
 pub mod system;
 pub mod ai;
 pub mod servo_adv;
+pub mod calib;
 pub mod lab_datasets;
 pub mod lab_deploy;
 pub mod lab_record;
