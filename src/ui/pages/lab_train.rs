@@ -1,12 +1,13 @@
 //! Lab / Train: queue training jobs, follow them live (loss and learning-rate curves, logs) and pick
 //! the checkpoints they produce. The job runs wherever the runner says; today that is this machine.
 
-use crate::engine::api::{Checkpoint, Job, MetricPoint, TrainRequest};
+use crate::engine::api::{Checkpoint, Job, MetricPoint, RemoteServer, TrainRequest};
 use crate::engine::events::EngineEvent;
 use crate::i18n::tr;
 use crate::ui::chart::{ChartSpec, Series, line_chart};
 use crate::ui::engine_state::{EngineNote, EngineState};
 use crate::ui::lab_util::{call, short_count};
+use crate::ui::pages::lab_servers::ServersPanel;
 use crate::ui::state::AppState;
 use crate::ui::widgets::{self, NumState, StrSelect, section};
 use gpui_kit::component::button::Button;
@@ -32,6 +33,9 @@ pub struct LabTrainPage {
     job_name: Entity<InputState>,
     extra: Entity<InputState>,
     use_excluded: bool,
+    /// Where the job runs: the first entry is this machine, the rest are the saved GPU servers.
+    runner: Entity<StrSelect>,
+    servers: Entity<ServersPanel>,
     jobs: Vec<Job>,
     selected: Option<String>,
     metrics: Vec<MetricPoint>,
@@ -55,7 +59,7 @@ pub fn parse_extra_args(text: &str) -> BTreeMap<String, String> {
 impl LabTrainPage {
     pub fn new(app: Entity<AppState>, engine: Entity<EngineState>, window: &mut Window, cx: &mut Context<Self>) -> Self {
         let subs = vec![
-            cx.observe(&app, |_, _, cx| cx.notify()),
+            cx.observe_in(&app, window, |this, _, window, cx| this.sync_runner(window, cx)),
             cx.observe(&engine, |_, _, cx| cx.notify()),
             cx.subscribe_in(&engine, window, |this, _, note: &EngineNote, window, cx| match note {
                 EngineNote::Status => this.refresh(window, cx),
@@ -67,7 +71,7 @@ impl LabTrainPage {
                 _ => {}
             }),
         ];
-        Self {
+        let mut page = Self {
             dataset: widgets::select(vec![], 0, window, cx),
             dataset_names: Vec::new(),
             policy: widgets::text_input("act", "act", window, cx),
@@ -78,6 +82,8 @@ impl LabTrainPage {
             job_name: widgets::text_input("", "", window, cx),
             extra: widgets::text_input("", "policy.chunk_size=50 optimizer.lr=1e-4", window, cx),
             use_excluded: true,
+            runner: widgets::select(vec![], 0, window, cx),
+            servers: cx.new(|cx| ServersPanel::new(app.clone(), engine.clone(), window, cx)),
             app,
             engine,
             jobs: Vec::new(),
@@ -86,7 +92,25 @@ impl LabTrainPage {
             logs: Vec::new(),
             checkpoints: Vec::new(),
             _subs: subs,
-        }
+        };
+        page.sync_runner(window, cx);
+        page
+    }
+
+    /// Runner choices: this machine first, then every saved GPU server.
+    fn sync_runner(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let local = SharedString::from(self.t("lab_train_runner_local", cx));
+        let mut items = vec![local];
+        items.extend(self.app.read(cx).settings.servers.iter().map(|s| SharedString::from(s.name.clone())));
+        let ix = widgets::selected_index(&self.runner, cx);
+        widgets::set_items(&self.runner, items, ix, window, cx);
+        cx.notify();
+    }
+
+    /// The server chosen in the runner picker, or `None` for this machine.
+    fn chosen_server(&self, cx: &App) -> Option<RemoteServer> {
+        let ix = widgets::selected_index(&self.runner, cx);
+        (ix > 0).then(|| self.app.read(cx).settings.servers.get(ix - 1).cloned()).flatten()
     }
 
     fn t(&self, key: &str, cx: &App) -> String {
@@ -172,6 +196,10 @@ impl LabTrainPage {
         }
         let name = widgets::read_text(&self.job_name, cx).trim().to_string();
         let save = widgets::read_i(&self.save_freq, cx);
+        let server = self.chosen_server(cx);
+        if widgets::selected_index(&self.runner, cx) > 0 && server.is_none() {
+            return widgets::notify_error(self.t("lab_train_need_server", cx), window, cx);
+        }
         let request = TrainRequest {
             dataset_repo_id: dataset,
             policy_type: policy,
@@ -182,8 +210,8 @@ impl LabTrainPage {
             job_name: (!name.is_empty()).then_some(name),
             use_excluded: self.use_excluded,
             extra_args: parse_extra_args(&widgets::read_text(&self.extra, cx)),
-            runner: "local".into(),
-            server: None,
+            runner: if server.is_some() { "remote_engine".into() } else { "local".into() },
+            server,
         };
         call(
             self.client(cx),
@@ -222,6 +250,7 @@ impl LabTrainPage {
         let num = |s: &NumState| div().w(px(150.)).child(NumberInput::new(s).small());
         section(self.t("lab_train_new", cx))
             .child(div().text_sm().text_color(cx.theme().muted_foreground).child(self.t("lab_train_hint", cx)))
+            .child(widgets::field(self.t("lab_train_runner", cx), Select::new(&self.runner).small(), cx))
             .child(widgets::field(self.t("lab_train_dataset", cx), Select::new(&self.dataset).small().placeholder("…"), cx))
             .child(widgets::field(self.t("lab_train_policy", cx), Input::new(&self.policy).small(), cx))
             .child(
@@ -364,7 +393,10 @@ impl Render for LabTrainPage {
         if !self.ready(cx) {
             page = page.child(div().text_color(cx.theme().muted_foreground).child(self.t("lab_need_engine", cx)));
         }
-        page.child(self.form_section(cx)).child(self.queue_section(cx)).child(self.detail_section(cx))
+        page.child(self.form_section(cx))
+            .child(self.queue_section(cx))
+            .child(self.detail_section(cx))
+            .child(self.servers.clone())
     }
 }
 

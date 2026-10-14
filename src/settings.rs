@@ -27,6 +27,8 @@ pub struct Settings {
     pub move_acc: u8,
     pub sync: SyncSettings,
     pub engine: crate::engine::supervisor::EngineSettings,
+    /// GPU servers for remote training (Lab: Train).
+    pub servers: Vec<crate::engine::api::RemoteServer>,
 }
 
 /// Synchronizer page values (the original kept them in `sync_host_gui_config.json`).
@@ -57,6 +59,7 @@ impl Default for Settings {
             move_acc: 254,
             sync: SyncSettings::default(),
             engine: Default::default(),
+            servers: Vec::new(),
         }
     }
 }
@@ -128,6 +131,7 @@ mod tests {
             move_acc: 100,
             sync: SyncSettings { center_pos: 1000, selected_servo: 4, offsets: [-2047, -1, 0, 1, 2047, 5] },
             engine: crate::engine::supervisor::EngineSettings { profile: "bench".into(), ..Default::default() },
+            servers: vec![crate::engine::api::RemoteServer { name: "gpu1".into(), host: "gpu.example.com".into(), user: "ubuntu".into(), ..Default::default() }],
         };
         let back: Settings = serde_json::from_str(&serde_json::to_string(&s).unwrap()).unwrap();
         assert_eq!(back, s);

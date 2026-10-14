@@ -812,6 +812,55 @@
         "title": "PortInfo",
         "type": "object"
       },
+      "RemoteServer": {
+        "properties": {
+          "engine_port": {
+            "default": 8765,
+            "exclusiveMaximum": 65536.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Engine Port",
+            "type": "integer"
+          },
+          "host": {
+            "title": "Host",
+            "type": "string"
+          },
+          "key_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Key Path"
+          },
+          "name": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$",
+            "title": "Name",
+            "type": "string"
+          },
+          "ssh_port": {
+            "default": 22,
+            "exclusiveMaximum": 65536.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Ssh Port",
+            "type": "integer"
+          },
+          "user": {
+            "title": "User",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "host",
+          "user"
+        ],
+        "title": "RemoteServer",
+        "type": "object"
+      },
       "RobotProfile": {
         "properties": {
           "baudrate": {
@@ -853,6 +902,34 @@
           "follower_port"
         ],
         "title": "RobotProfile",
+        "type": "object"
+      },
+      "ServerTest": {
+        "properties": {
+          "detail": {
+            "default": "",
+            "title": "Detail",
+            "type": "string"
+          },
+          "engine": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Health"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ssh_ok": {
+            "title": "Ssh Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ssh_ok"
+        ],
+        "title": "ServerTest",
         "type": "object"
       },
       "SessionControl": {
@@ -1025,6 +1102,20 @@
             "title": "Dataset Repo Id",
             "type": "string"
           },
+          "episodes": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Episodes"
+          },
           "extra_args": {
             "additionalProperties": {
               "type": "string"
@@ -1076,13 +1167,12 @@
           "server": {
             "anyOf": [
               {
-                "type": "string"
+                "$ref": "#/components/schemas/RemoteServer"
               },
               {
                 "type": "null"
               }
-            ],
-            "title": "Server"
+            ]
           },
           "steps": {
             "exclusiveMinimum": 0.0,
@@ -1433,6 +1523,100 @@
           }
         },
         "summary": "Dataset Info",
+        "tags": [
+          "datasets"
+        ]
+      }
+    },
+    "/api/v1/datasets/{owner}/{name}/archive": {
+      "get": {
+        "operationId": "download_archive_api_v1_datasets__owner___name__archive_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "owner",
+            "required": true,
+            "schema": {
+              "title": "Owner",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "title": "Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Download Archive",
+        "tags": [
+          "datasets"
+        ]
+      },
+      "put": {
+        "description": "Receive a dataset as a tar.gz body. Refuses a name that already exists; never overwrites.",
+        "operationId": "upload_archive_api_v1_datasets__owner___name__archive_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "owner",
+            "required": true,
+            "schema": {
+              "title": "Owner",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "title": "Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Upload Archive",
         "tags": [
           "datasets"
         ]
@@ -2337,6 +2521,51 @@
         ]
       }
     },
+    "/api/v1/jobs/{job_id}/checkpoints/{step}/archive": {
+      "get": {
+        "description": "A checkpoint's ``pretrained_model`` directory as a tar.gz (how remote training returns results).",
+        "operationId": "checkpoint_archive_api_v1_jobs__job_id__checkpoints__step__archive_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "step",
+            "required": true,
+            "schema": {
+              "title": "Step",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Checkpoint Archive",
+        "tags": [
+          "jobs"
+        ]
+      }
+    },
     "/api/v1/jobs/{job_id}/logs": {
       "get": {
         "operationId": "job_logs_api_v1_jobs__job_id__logs_get",
@@ -2358,6 +2587,22 @@
               "default": 200,
               "title": "Tail",
               "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Offset"
             }
           }
         ],
@@ -2748,6 +2993,48 @@
           }
         },
         "summary": "Put Profile",
+        "tags": [
+          "system"
+        ]
+      }
+    },
+    "/api/v1/servers/test": {
+      "post": {
+        "description": "Open the SSH tunnel to a GPU server and ask its engine for its version; starts nothing remotely.",
+        "operationId": "test_server_api_v1_servers_test_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoteServer"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerTest"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Test Server",
         "tags": [
           "system"
         ]

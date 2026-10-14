@@ -41,6 +41,7 @@ const LAB_TABLES: &[&str] = &[
     include_str!("../assets/i18n/lab_datasets.json"),
     include_str!("../assets/i18n/lab_record.json"),
     include_str!("../assets/i18n/lab_train.json"),
+    include_str!("../assets/i18n/lab_servers.json"),
     include_str!("../assets/i18n/lab_deploy.json"),
 ];
 

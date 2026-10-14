@@ -9,6 +9,7 @@ pub mod servo_adv;
 pub mod lab_datasets;
 pub mod lab_deploy;
 pub mod lab_record;
+pub mod lab_servers;
 pub mod lab_session;
 pub mod lab_train;
 pub mod teach;

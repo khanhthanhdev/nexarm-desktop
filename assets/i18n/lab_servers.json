@@ -1,0 +1,42 @@
+{
+ "en": {
+  "lab_train_runner": "Run on",
+  "lab_train_runner_local": "This machine",
+  "lab_train_need_server": "Add the GPU server in the list below first.",
+  "lab_servers": "GPU servers",
+  "lab_servers_hint": "Train on your own GPU server or a rented one. The app reaches the server's engine through an SSH tunnel, uploads the dataset and brings the checkpoints back. SSH keys stay with your SSH agent.",
+  "lab_server_pick": "Saved servers",
+  "lab_server_host": "Host",
+  "lab_server_user": "SSH user",
+  "lab_server_key": "SSH key file",
+  "lab_server_ssh_port": "SSH port",
+  "lab_server_engine_port": "Engine port",
+  "lab_server_save": "Save server",
+  "lab_server_test": "Test connection",
+  "lab_server_testing": "Connecting through SSH…",
+  "lab_server_ok": "Connected. The server's engine is ready (lerobot {version}).",
+  "lab_server_need_fields": "Enter a name, host and SSH user.",
+  "lab_server_bad_fields": "The host must be a plain hostname or IP address and the user a plain account name.",
+  "lab_server_bootstrap": "Fresh server? Run scripts/nexarm-gpu-bootstrap.sh from a lerobot-nexarm checkout on it (or with --repo URL). It installs the engine under ~/.nexarm and the app starts it when needed."
+ },
+ "vi": {
+  "lab_train_runner": "Chạy trên",
+  "lab_train_runner_local": "Máy này",
+  "lab_train_need_server": "Hãy thêm máy chủ GPU ở danh sách bên dưới trước.",
+  "lab_servers": "Máy chủ GPU",
+  "lab_servers_hint": "Huấn luyện trên máy chủ GPU của bạn hoặc máy thuê. Ứng dụng kết nối tới engine của máy chủ qua đường hầm SSH, tải bộ dữ liệu lên và mang checkpoint về. Khóa SSH vẫn do SSH agent của bạn giữ.",
+  "lab_server_pick": "Máy chủ đã lưu",
+  "lab_server_host": "Máy chủ",
+  "lab_server_user": "Người dùng SSH",
+  "lab_server_key": "Tệp khóa SSH",
+  "lab_server_ssh_port": "Cổng SSH",
+  "lab_server_engine_port": "Cổng engine",
+  "lab_server_save": "Lưu máy chủ",
+  "lab_server_test": "Kiểm tra kết nối",
+  "lab_server_testing": "Đang kết nối qua SSH…",
+  "lab_server_ok": "Đã kết nối. Engine trên máy chủ sẵn sàng (lerobot {version}).",
+  "lab_server_need_fields": "Hãy nhập tên, máy chủ và người dùng SSH.",
+  "lab_server_bad_fields": "Máy chủ phải là tên máy hoặc địa chỉ IP thông thường, người dùng là tên tài khoản thông thường.",
+  "lab_server_bootstrap": "Máy chủ mới? Chạy scripts/nexarm-gpu-bootstrap.sh từ một bản lerobot-nexarm trên máy đó (hoặc với --repo URL). Script cài engine vào ~/.nexarm và ứng dụng sẽ tự khởi động khi cần."
+ }
+}

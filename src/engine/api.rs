@@ -175,7 +175,7 @@ pub struct TrainRequest {
     #[serde(default = "local")]
     pub runner: String,
     #[serde(default)]
-    pub server: Option<String>,
+    pub server: Option<RemoteServer>,
 }
 
 fn yes() -> bool {
@@ -252,4 +252,42 @@ impl ModelInfo {
         }
         format!("{} [{}]", parts.join(" · "), self.source)
     }
+}
+
+/// A GPU server reached over an SSH tunnel. Keys stay with the OS SSH agent unless `key_path` is set.
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
+pub struct RemoteServer {
+    pub name: String,
+    pub host: String,
+    pub user: String,
+    #[serde(default = "default_ssh_port")]
+    pub ssh_port: u16,
+    #[serde(default)]
+    pub key_path: Option<String>,
+    #[serde(default = "default_engine_port")]
+    pub engine_port: u16,
+}
+
+fn default_ssh_port() -> u16 {
+    22
+}
+
+fn default_engine_port() -> u16 {
+    8765
+}
+
+impl Default for RemoteServer {
+    fn default() -> Self {
+        Self { name: String::new(), host: String::new(), user: String::new(), ssh_port: 22, key_path: None, engine_port: 8765 }
+    }
+}
+
+/// Reply of `POST /servers/test`.
+#[derive(Clone, Debug, Deserialize, PartialEq)]
+pub struct ServerTest {
+    pub ssh_ok: bool,
+    #[serde(default)]
+    pub engine: Option<Health>,
+    #[serde(default)]
+    pub detail: String,
 }

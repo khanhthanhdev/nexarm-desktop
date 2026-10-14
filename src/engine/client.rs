@@ -30,6 +30,7 @@ macro_rules! define_routes {
 define_routes! {
     HEALTH = "GET" "/api/v1/health";
     SHUTDOWN = "POST" "/api/v1/shutdown";
+    TEST_SERVER = "POST" "/api/v1/servers/test";
     PROFILES = "GET" "/api/v1/profiles";
     PUT_PROFILE = "PUT" "/api/v1/profiles/{name}";
     DELETE_PROFILE = "DELETE" "/api/v1/profiles/{name}";
@@ -197,6 +198,12 @@ impl EngineClient {
 
     pub fn shutdown(&self) -> Result<()> {
         self.send(&self.short, routes::SHUTDOWN, &[], None).map(|_| ())
+    }
+
+    /// Open the SSH tunnel to a GPU server and ask its engine for its version. Starts nothing remotely.
+    pub fn test_server(&self, server: &RemoteServer) -> Result<ServerTest> {
+        let body = serde_json::to_value(server).map_err(|e| ClientError::Transport(e.to_string()))?;
+        self.json_with(&self.long, routes::TEST_SERVER, &[], Some(body))
     }
 
     pub fn profiles(&self) -> Result<Vec<RobotProfile>> {
