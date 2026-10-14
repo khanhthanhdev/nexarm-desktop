@@ -126,6 +126,12 @@ pub struct AppState {
 
 impl EventEmitter<DeviceEvent> for AppState {}
 
+/// Switch the whole UI between the "light" and "dark" palettes.
+pub fn apply_theme(name: &str, cx: &mut App) {
+    let mode = if name == "dark" { gpui_kit::component::ThemeMode::Dark } else { gpui_kit::component::ThemeMode::Light };
+    gpui_kit::component::Theme::change(mode, None, cx);
+}
+
 impl AppState {
     pub fn new(cx: &mut Context<Self>) -> Self {
         let settings = Settings::load();
@@ -172,6 +178,14 @@ impl AppState {
         self.settings.lang = self.lang.code().into();
         self.persist();
         cx.emit(DeviceEvent::LangChanged);
+        cx.notify();
+    }
+
+    pub fn toggle_theme(&mut self, cx: &mut Context<Self>) {
+        let dark = self.settings.theme != "dark";
+        self.settings.theme = if dark { "dark" } else { "light" }.into();
+        self.persist();
+        apply_theme(&self.settings.theme, cx);
         cx.notify();
     }
 

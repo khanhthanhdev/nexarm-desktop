@@ -2,11 +2,15 @@
  "en": {
   "nav_group_control": "Control",
   "nav_group_setup": "Setup & calibration",
-  "nav_group_lab": "Lab"
+  "nav_group_lab": "Lab",
+  "theme_dark": "Dark",
+  "theme_light": "Light"
  },
  "vi": {
   "nav_group_control": "Điều khiển",
   "nav_group_setup": "Cài đặt & hiệu chuẩn",
-  "nav_group_lab": "Lab"
+  "nav_group_lab": "Lab",
+  "theme_dark": "Tối",
+  "theme_light": "Sáng"
  }
 }

@@ -369,7 +369,21 @@ impl Shell {
             .gap_1()
             .px_5()
             .py_2()
-            .child(h_flex().gap_2().items_center().child(div().text_color(dot).child("●")).child(status.clone()))
+            .child(
+                h_flex()
+                    .gap_2()
+                    .items_center()
+                    .child(div().text_color(dot).child("●"))
+                    .child(status.clone())
+                    .child(div().flex_1())
+                    .child(
+                        Button::new("theme")
+                            .small()
+                            .outline()
+                            .label(app.t(if app.settings.theme == "dark" { "theme_light" } else { "theme_dark" }))
+                            .on_click(cx.listener(|this, _, _, cx| this.app.update(cx, |a, cx| a.toggle_theme(cx)))),
+                    ),
+            )
             .child(caption("comm_method"))
             .child(Select::new(&self.method).small())
             .child(if wifi { wifi_panel } else { serial_panel })

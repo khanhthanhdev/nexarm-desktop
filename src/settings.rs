@@ -17,6 +17,8 @@ pub enum ConnMethod {
 #[serde(default)]
 pub struct Settings {
     pub lang: String,
+    /// "light" or "dark".
+    pub theme: String,
     pub method: ConnMethod,
     pub serial_port: Option<String>,
     pub baud: u32,
@@ -52,6 +54,7 @@ impl Default for Settings {
     fn default() -> Self {
         Self {
             lang: "en".into(),
+            theme: "light".into(),
             method: ConnMethod::Serial,
             serial_port: None,
             baud: 1_000_000,

@@ -1,16 +1,17 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use gpui_kit::component::{Theme, ThemeMode};
 use gpui_kit::*;
 use nexarm_desktop::i18n::{Lang, tr};
 use nexarm_desktop::settings::Settings;
 use nexarm_desktop::ui::shell::Shell;
+use nexarm_desktop::ui::state::apply_theme;
 
 fn main() {
     gpui_kit::application().with_assets(gpui_kit::assets::Assets).run(|cx| {
         gpui_kit::init(cx);
-        Theme::change(ThemeMode::Dark, None, cx);
-        let title = tr(Lang::from_code(&Settings::load().lang), "window_title");
+        let settings = Settings::load();
+        apply_theme(&settings.theme, cx);
+        let title = tr(Lang::from_code(&settings.lang), "window_title");
         // Preferred size, shrunk to fit small or highly scaled displays.
         let screen = cx.primary_display().map(|d| d.bounds().size);
         let fit = |want: Pixels, have: Option<Pixels>| have.map_or(want, |h| want.min(h * 0.92));
