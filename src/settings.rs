@@ -76,9 +76,12 @@ impl Settings {
     }
 }
 
-/// `<OS config dir>/NexArm`, created on demand.
+/// `<OS config dir>/NexArm` (or `$NEXARM_CONFIG_DIR`, which the UI tests use), created on demand.
 pub fn config_dir() -> PathBuf {
-    let dir = dirs::config_dir().unwrap_or_else(std::env::temp_dir).join("NexArm");
+    let dir = match std::env::var_os("NEXARM_CONFIG_DIR") {
+        Some(p) => PathBuf::from(p),
+        None => dirs::config_dir().unwrap_or_else(std::env::temp_dir).join("NexArm"),
+    };
     let _ = std::fs::create_dir_all(&dir);
     dir
 }

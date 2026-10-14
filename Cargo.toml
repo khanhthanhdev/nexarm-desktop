@@ -23,3 +23,6 @@ ureq = { version = "3", features = ["json"] }
 
 [profile.dev.package."*"]
 opt-level = 2
+
+[dev-dependencies]
+gpui = { package = "gpui-pre", version = "0.3.9", features = ["test-support"] }
