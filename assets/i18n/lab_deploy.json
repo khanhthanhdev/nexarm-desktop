@@ -1,0 +1,42 @@
+{
+ "en": {
+  "lab_dep_setup": "Deploy a policy",
+  "lab_dep_hint": "The engine checks which robot a checkpoint was trained for and refuses one trained on another robot type. Stopping returns the arm to its starting pose before torque is released.",
+  "lab_dep_mode": "Mode",
+  "lab_dep_mode_rollout": "Rollout (no recording)",
+  "lab_dep_mode_eval": "Evaluate (records an eval_ dataset)",
+  "lab_dep_model": "Checkpoint",
+  "lab_dep_hub_model": "Or a Hub policy",
+  "lab_dep_duration": "Duration (s)",
+  "lab_dep_eval_repo": "Eval dataset (owner/eval_name)",
+  "lab_dep_unverified": "Allow a checkpoint whose training data cannot be checked",
+  "lab_dep_start_rollout": "Start rollout",
+  "lab_dep_start_eval": "Start evaluation",
+  "lab_dep_start_hint": "Loading a policy can take a while; the page waits until the arm is ready.",
+  "lab_dep_need_model": "Pick a checkpoint or enter a Hub policy id.",
+  "lab_dep_need_eval_name": "The evaluation dataset must be named owner/eval_something.",
+  "lab_dep_live": "Live session",
+  "lab_dep_idle": "No policy is running.",
+  "lab_dep_stop": "Stop and return to rest"
+ },
+ "vi": {
+  "lab_dep_setup": "Triển khai policy",
+  "lab_dep_hint": "Engine kiểm tra checkpoint được huấn luyện cho robot nào và từ chối checkpoint của loại robot khác. Khi dừng, cánh tay về tư thế ban đầu rồi mới nhả mô-men.",
+  "lab_dep_mode": "Chế độ",
+  "lab_dep_mode_rollout": "Chạy thử (không ghi)",
+  "lab_dep_mode_eval": "Đánh giá (ghi bộ dữ liệu eval_)",
+  "lab_dep_model": "Checkpoint",
+  "lab_dep_hub_model": "Hoặc policy trên Hub",
+  "lab_dep_duration": "Thời lượng (giây)",
+  "lab_dep_eval_repo": "Bộ dữ liệu đánh giá (owner/eval_ten)",
+  "lab_dep_unverified": "Cho phép checkpoint không kiểm tra được dữ liệu huấn luyện",
+  "lab_dep_start_rollout": "Bắt đầu chạy thử",
+  "lab_dep_start_eval": "Bắt đầu đánh giá",
+  "lab_dep_start_hint": "Nạp policy có thể mất một lúc; trang sẽ chờ đến khi cánh tay sẵn sàng.",
+  "lab_dep_need_model": "Hãy chọn checkpoint hoặc nhập id policy trên Hub.",
+  "lab_dep_need_eval_name": "Bộ dữ liệu đánh giá phải có tên dạng owner/eval_gì_đó.",
+  "lab_dep_live": "Phiên đang chạy",
+  "lab_dep_idle": "Chưa có policy nào đang chạy.",
+  "lab_dep_stop": "Dừng và về tư thế nghỉ"
+ }
+}
