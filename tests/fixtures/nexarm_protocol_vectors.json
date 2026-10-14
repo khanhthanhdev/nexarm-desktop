@@ -1,0 +1,121 @@
+{
+  "vectors": [
+    {
+      "name": "set_motion_params_acc100_speed2000",
+      "kind": "request",
+      "id": 255,
+      "cmd": 56,
+      "args": "64d007",
+      "frame": "ffffff053864d00788",
+      "checksum": "full"
+    },
+    {
+      "name": "bridge_mode_on",
+      "kind": "request",
+      "id": 255,
+      "cmd": 68,
+      "args": "01",
+      "frame": "ffffff034401b8",
+      "checksum": "full"
+    },
+    {
+      "name": "bridge_mode_off",
+      "kind": "request",
+      "id": 255,
+      "cmd": 68,
+      "args": "00",
+      "frame": "ffffff034400b9",
+      "checksum": "full"
+    },
+    {
+      "name": "read_positions",
+      "kind": "request",
+      "id": 255,
+      "cmd": 96,
+      "args": "",
+      "frame": "ffffff02609e",
+      "checksum": "full"
+    },
+    {
+      "name": "write_positions_centre",
+      "kind": "request",
+      "id": 255,
+      "cmd": 97,
+      "args": "000800080008000800080008",
+      "frame": "ffffff0e6100080008000800080008000861",
+      "checksum": "full"
+    },
+    {
+      "name": "write_positions_mixed",
+      "kind": "request",
+      "id": 255,
+      "cmd": 97,
+      "args": "0000ff0fab04110b6400b80b",
+      "frame": "ffffff0e610000ff0fab04110b6400b80b91",
+      "checksum": "full"
+    },
+    {
+      "name": "torque_on",
+      "kind": "request",
+      "id": 255,
+      "cmd": 98,
+      "args": "01",
+      "frame": "ffffff0362019a",
+      "checksum": "full"
+    },
+    {
+      "name": "torque_off",
+      "kind": "request",
+      "id": 255,
+      "cmd": 98,
+      "args": "00",
+      "frame": "ffffff0362009b",
+      "checksum": "full"
+    },
+    {
+      "name": "read_positions_reply_full",
+      "kind": "reply",
+      "id": 255,
+      "cmd": 96,
+      "args": "0000ff0fab04110b6400b80b",
+      "frame": "ffffff0e600000ff0fab04110b6400b80b92",
+      "checksum": "full"
+    },
+    {
+      "name": "read_positions_reply_short_checksum",
+      "kind": "reply",
+      "id": 255,
+      "cmd": 96,
+      "args": "0000ff0fab04110b6400b80b",
+      "frame": "ffffff0e600000ff0fab04110b6400b80b92",
+      "checksum": "short"
+    },
+    {
+      "name": "torque_reply_short_checksum",
+      "kind": "reply",
+      "id": 255,
+      "cmd": 98,
+      "args": "01",
+      "frame": "ffffff0362019b",
+      "checksum": "short"
+    },
+    {
+      "name": "bridge_mode_reply_short_checksum",
+      "kind": "reply",
+      "id": 255,
+      "cmd": 68,
+      "args": "01",
+      "frame": "ffffff034401b9",
+      "checksum": "short"
+    },
+    {
+      "name": "read_positions_reply_corrupt",
+      "kind": "reply",
+      "id": 255,
+      "cmd": 96,
+      "args": "0000ff0fab04110b6400b80b",
+      "frame": "ffffff0e600000ff0fab04110b6400b80b93",
+      "checksum": "bad"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+# Refresh tests/fixtures/nexarm_protocol_vectors.json from a lerobot-nexarm checkout.
+# usage: scripts/sync-protocol-vectors [path-to-lerobot-nexarm]   (default: ../../lerobot-nexarm)
+set -eu
+src="${1:-$(dirname "$0")/../../../lerobot-nexarm}/tests/fixtures/nexarm_protocol_vectors.json"
+dst="$(dirname "$0")/../tests/fixtures/nexarm_protocol_vectors.json"
+cp "$src" "$dst"
+echo "updated $dst"
