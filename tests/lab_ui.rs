@@ -6,7 +6,8 @@
 use gpui::{AppContext as _, Entity, TestAppContext, VisualTestContext};
 use nexarm_desktop::ui::engine_state::{EngineNote, EngineState, EngineStatus, teleop_params};
 use nexarm_desktop::ui::pages::{
-    lab_datasets::LabDatasetsPage, lab_deploy::LabDeployPage, lab_record::LabRecordPage, lab_session::LabSessionPage,
+    lab_datasets::LabDatasetsPage, lab_deploy::LabDeployPage, lab_record::LabRecordPage, lab_remote::LabRemotePage,
+    lab_session::LabSessionPage,
     lab_train::LabTrainPage,
 };
 use nexarm_desktop::ui::state::AppState;
@@ -188,6 +189,7 @@ fn every_lab_page_renders_before_and_after_connecting(cx: &mut TestAppContext) {
             cx.new(|cx| LabDatasetsPage::new(app.clone(), engine.clone(), window, cx)).into(),
             cx.new(|cx| LabTrainPage::new(app.clone(), engine.clone(), window, cx)).into(),
             cx.new(|cx| LabDeployPage::new(app.clone(), engine.clone(), window, cx)).into(),
+            cx.new(|cx| LabRemotePage::new(app.clone(), engine.clone(), window, cx)).into(),
         ]
     });
     draw(vcx);

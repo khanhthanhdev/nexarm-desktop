@@ -44,6 +44,7 @@ const LAB_TABLES: &[&str] = &[
     include_str!("../assets/i18n/lab_servers.json"),
     include_str!("../assets/i18n/lab_deploy.json"),
     include_str!("../assets/i18n/lab_coach.json"),
+    include_str!("../assets/i18n/lab_remote.json"),
 ];
 
 fn table() -> &'static Table {
@@ -136,6 +137,9 @@ mod tests {
         for mode in ["rollout", "eval", "coaching"] {
             keys.push(format!("lab_dep_mode_{mode}"));
             keys.push(format!("lab_dep_start_{mode}"));
+        }
+        for phase in ["parked", "parking", "engaging", "engaged", "connecting"] {
+            keys.push(format!("lab_remote_phase_{phase}"));
         }
         for phase in ["autonomous", "paused", "correcting"] {
             keys.push(format!("lab_coach_phase_{phase}"));

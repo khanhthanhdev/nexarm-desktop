@@ -70,3 +70,22 @@ fn the_event_stream_says_hello() {
     let first = rx.recv_timeout(Duration::from_secs(10)).expect("an event");
     assert_eq!(first, EngineEvent::Hello { api_version: API_VERSION.into() });
 }
+
+/// Needs an engine started with `--token $NEXARM_LIVE_TOKEN` (the engine then refuses unauthenticated calls).
+#[test]
+#[ignore = "needs a running engine started with --token"]
+fn a_token_protected_engine_refuses_callers_without_the_token() {
+    let token = std::env::var("NEXARM_LIVE_TOKEN").expect("set NEXARM_LIVE_TOKEN");
+    let url = std::env::var("NEXARM_ENGINE_URL").unwrap_or_else(|_| "http://127.0.0.1:8765".into());
+    let denied = EngineClient::new(url.clone()).health().unwrap_err();
+    assert_eq!(denied.status(), Some(401), "{denied}");
+    let wrong = EngineClient::new(url.clone()).with_token("nope").health().unwrap_err();
+    assert_eq!(wrong.status(), Some(401));
+    let client = EngineClient::new(url).with_token(&token);
+    assert_eq!(client.health().unwrap().api_version, API_VERSION);
+
+    let (tx, rx) = flume::unbounded();
+    let _listener = listen(client.events_url(), tx);
+    let first = rx.recv_timeout(Duration::from_secs(10)).expect("an event");
+    assert_eq!(first, EngineEvent::Hello { api_version: API_VERSION.into() });
+}

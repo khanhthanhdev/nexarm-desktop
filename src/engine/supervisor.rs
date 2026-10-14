@@ -17,6 +17,11 @@ pub struct EngineSettings {
     /// Working directory for the command (for example a lerobot-nexarm checkout used with `uv run`).
     pub working_dir: String,
     pub auto_start: bool,
+    /// Address the engine this app starts listens on. Loopback, except while this machine hosts a station
+    /// for remote operators (then a LAN or tailnet address, or 0.0.0.0).
+    pub bind_host: String,
+    /// Bearer token the app sends on every call. Required whenever `bind_host` is not loopback.
+    pub token: String,
     /// Name of the robot profile the Lab pages use.
     pub profile: String,
 }
@@ -28,6 +33,8 @@ impl Default for EngineSettings {
             command: "lerobot-nexarm-service".into(),
             working_dir: String::new(),
             auto_start: true,
+            bind_host: "127.0.0.1".into(),
+            token: String::new(),
             profile: String::new(),
         }
     }
@@ -50,6 +57,18 @@ pub fn probe(client: &EngineClient) -> Attach {
         Ok(h) => Attach::Mismatch { engine: h.api_version },
         Err(e) => Attach::Unreachable(e.to_string()),
     }
+}
+
+/// True for the addresses an engine can listen on without needing a token.
+pub fn is_loopback_host(host: &str) -> bool {
+    host == "localhost" || host.parse::<std::net::IpAddr>().is_ok_and(|ip| ip.is_loopback())
+}
+
+/// A fresh 192-bit random token as hex.
+pub fn generate_token() -> String {
+    let mut bytes = [0u8; 24];
+    getrandom::fill(&mut bytes).expect("the OS random source is available");
+    bytes.iter().map(|b| format!("{b:02x}")).collect()
 }
 
 /// Split a command line on whitespace; double quotes keep a segment together.
@@ -109,7 +128,14 @@ impl Supervisor {
         let port = url_port(&settings.url).context("the engine URL has no port")?;
         let log = std::fs::File::create(crate::settings::config_dir().join("engine.log")).context("cannot create engine.log")?;
         let mut cmd = Command::new(program);
-        cmd.args(args).args(["--host", "127.0.0.1", "--port", &port.to_string()]);
+        let host = settings.bind_host.trim();
+        let host = if host.is_empty() { "127.0.0.1" } else { host };
+        anyhow::ensure!(is_loopback_host(host) || !settings.token.trim().is_empty(), "an engine listening on {host} needs a token");
+        cmd.args(args).args(["--host", host, "--port", &port.to_string()]);
+        if !settings.token.trim().is_empty() {
+            // In the environment, not on the command line, so it is not visible in the process list.
+            cmd.env("NEXARM_ENGINE_TOKEN", settings.token.trim());
+        }
         if !settings.working_dir.trim().is_empty() {
             cmd.current_dir(settings.working_dir.trim());
         }
@@ -228,5 +254,30 @@ mod tests {
         assert!(!s.owns_engine());
         s.stop(&EngineClient::new(url)); // no child: must not touch the engine
         assert!(!s.owns_engine());
+    }
+
+    #[test]
+    fn loopback_addresses_need_no_token_and_others_do() {
+        for h in ["127.0.0.1", "::1", "localhost"] {
+            assert!(is_loopback_host(h), "{h}");
+        }
+        for h in ["0.0.0.0", "100.64.0.7", "192.168.1.5", "gpu.example.com"] {
+            assert!(!is_loopback_host(h), "{h}");
+        }
+    }
+
+    #[test]
+    fn generated_tokens_are_long_hex_and_unique() {
+        let (a, b) = (generate_token(), generate_token());
+        assert_eq!(a.len(), 48);
+        assert!(a.chars().all(|c| c.is_ascii_hexdigit()));
+        assert_ne!(a, b);
+    }
+
+    #[test]
+    fn an_engine_beyond_loopback_is_not_started_without_a_token() {
+        let settings = EngineSettings { bind_host: "0.0.0.0".into(), ..Default::default() };
+        let err = Supervisor::default().spawn(&settings).unwrap_err().to_string();
+        assert!(err.contains("needs a token"), "{err}");
     }
 }

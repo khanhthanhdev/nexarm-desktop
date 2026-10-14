@@ -128,6 +128,7 @@ pub fn split_repo(repo_id: &str) -> (&str, &str) {
 #[derive(Clone)]
 pub struct EngineClient {
     base: String,
+    token: Option<String>,
     short: ureq::Agent,
     /// For calls that block on hardware or a policy load (session start and stop).
     long: ureq::Agent,
@@ -141,9 +142,38 @@ impl EngineClient {
     pub fn new(base: impl Into<String>) -> Self {
         Self {
             base: base.into().trim_end_matches('/').to_string(),
+            token: None,
             short: agent(Duration::from_secs(15)),
             long: agent(Duration::from_secs(900)),
         }
+    }
+
+    /// Send `Authorization: Bearer <token>` on every call (an engine reached beyond loopback requires it).
+    pub fn with_token(mut self, token: &str) -> Self {
+        self.token = (!token.trim().is_empty()).then(|| token.trim().to_string());
+        self
+    }
+
+    fn auth<B>(&self, req: ureq::RequestBuilder<B>) -> ureq::RequestBuilder<B> {
+        match &self.token {
+            Some(t) => req.header("Authorization", format!("Bearer {t}")),
+            None => req,
+        }
+    }
+
+    /// GET a URL with query string already in it; an error status becomes [`ClientError::Http`].
+    fn raw_get(&self, url: &str) -> Result<ureq::http::Response<ureq::Body>> {
+        let mut resp = self.auth(self.short.get(url)).call().map_err(|e| ClientError::Transport(e.to_string()))?;
+        let status = resp.status().as_u16();
+        if status >= 400 {
+            let text = resp.body_mut().read_to_string().unwrap_or_default();
+            return Err(ClientError::Http { status, detail: error_detail(&text) });
+        }
+        Ok(resp)
+    }
+
+    fn get_text(&self, url: &str) -> Result<String> {
+        self.raw_get(url)?.body_mut().read_to_string().map_err(|e| ClientError::Transport(e.to_string()))
     }
 
     pub fn base_url(&self) -> &str {
@@ -153,18 +183,21 @@ impl EngineClient {
     /// WebSocket URL of the event stream.
     pub fn events_url(&self) -> String {
         let ws = self.base.replacen("http://", "ws://", 1).replacen("https://", "wss://", 1);
-        format!("{ws}/api/v1/ws/events")
+        match &self.token {
+            Some(t) => format!("{ws}/api/v1/ws/events?token={}", encode_segment(t)),
+            None => format!("{ws}/api/v1/ws/events"),
+        }
     }
 
     fn send(&self, agent: &ureq::Agent, route: Route, params: &[(&str, &str)], body: Option<Value>) -> Result<ureq::http::Response<ureq::Body>> {
         let url = format!("{}{}", self.base, fill_path(route.path, params));
         let transport = |e: ureq::Error| ClientError::Transport(e.to_string());
         let mut resp = match (route.method, body) {
-            ("GET", _) => agent.get(&url).call(),
-            ("DELETE", _) => agent.delete(&url).call(),
-            ("POST", Some(b)) => agent.post(&url).send_json(&b),
-            ("POST", None) => agent.post(&url).send_empty(),
-            ("PUT", Some(b)) => agent.put(&url).send_json(&b),
+            ("GET", _) => self.auth(agent.get(&url)).call(),
+            ("DELETE", _) => self.auth(agent.delete(&url)).call(),
+            ("POST", Some(b)) => self.auth(agent.post(&url)).send_json(&b),
+            ("POST", None) => self.auth(agent.post(&url)).send_empty(),
+            ("PUT", Some(b)) => self.auth(agent.put(&url)).send_json(&b),
             (m, _) => return Err(ClientError::Transport(format!("unsupported call {m} {}", route.path))),
         }
         .map_err(transport)?;
@@ -281,12 +314,7 @@ impl EngineClient {
         let (ep, fr) = (episode.to_string(), frame.to_string());
         let params = [("owner", owner), ("name", name), ("episode", ep.as_str()), ("camera", camera), ("frame", fr.as_str())];
         let url = format!("{}{}?width={width}", self.base, fill_path(routes::FRAME.path, &params));
-        let mut resp = self.short.get(&url).call().map_err(|e| ClientError::Transport(e.to_string()))?;
-        let status = resp.status().as_u16();
-        if status >= 400 {
-            let text = resp.body_mut().read_to_string().unwrap_or_default();
-            return Err(ClientError::Http { status, detail: error_detail(&text) });
-        }
+        let mut resp = self.raw_get(&url)?;
         resp.body_mut().read_to_vec().map_err(|e| ClientError::Transport(e.to_string()))
     }
 
@@ -340,12 +368,7 @@ impl EngineClient {
 
     pub fn hub_datasets(&self, author: &str) -> Result<Vec<Value>> {
         let url = format!("{}{}?author={}", self.base, routes::DATASETS_HUB.path, encode_segment(author));
-        let mut resp = self.short.get(&url).call().map_err(|e| ClientError::Transport(e.to_string()))?;
-        let status = resp.status().as_u16();
-        let text = resp.body_mut().read_to_string().map_err(|e| ClientError::Transport(e.to_string()))?;
-        if status >= 400 {
-            return Err(ClientError::Http { status, detail: error_detail(&text) });
-        }
+        let text = self.get_text(&url)?;
         serde_json::from_str(&text).map_err(|e| ClientError::Transport(format!("bad reply: {e}")))
     }
 
@@ -377,12 +400,7 @@ impl EngineClient {
 
     pub fn job_logs(&self, job_id: &str, tail: u32) -> Result<Vec<String>> {
         let url = format!("{}{}?tail={tail}", self.base, fill_path(routes::JOB_LOGS.path, &[("job_id", job_id)]));
-        let mut resp = self.short.get(&url).call().map_err(|e| ClientError::Transport(e.to_string()))?;
-        let status = resp.status().as_u16();
-        let text = resp.body_mut().read_to_string().map_err(|e| ClientError::Transport(e.to_string()))?;
-        if status >= 400 {
-            return Err(ClientError::Http { status, detail: error_detail(&text) });
-        }
+        let text = self.get_text(&url)?;
         serde_json::from_str(&text).map_err(|e| ClientError::Transport(format!("bad reply: {e}")))
     }
 
@@ -451,5 +469,31 @@ mod tests {
         for r in routes::ALL {
             assert!(seen.insert((r.method, r.path)), "duplicate route {} {}", r.method, r.path);
         }
+    }
+
+    #[test]
+    fn a_token_is_sent_as_a_bearer_header_and_in_the_event_url() {
+        use std::io::{Read, Write};
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let url = format!("http://127.0.0.1:{}", listener.local_addr().unwrap().port());
+        let (tx, rx) = std::sync::mpsc::channel();
+        std::thread::spawn(move || {
+            let (mut s, _) = listener.accept().unwrap();
+            let mut buf = [0u8; 2048];
+            let n = s.read(&mut buf).unwrap();
+            tx.send(String::from_utf8_lossy(&buf[..n]).to_string()).unwrap();
+            let body = r#"{"status":"ok","version":"1","api_version":"1","capabilities":[],"pid":1}"#;
+            let _ = s.write_all(
+                format!("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len())
+                    .as_bytes(),
+            );
+        });
+        let client = EngineClient::new(url.clone()).with_token("s3 cret");
+        client.health().unwrap();
+        let request = rx.recv().unwrap().to_ascii_lowercase();
+        assert!(request.contains("authorization: bearer s3 cret"), "{request}");
+        assert!(client.events_url().ends_with("/api/v1/ws/events?token=s3%20cret"));
+        // no token: no header and a plain event URL
+        assert!(EngineClient::new(url).with_token("  ").events_url().ends_with("/api/v1/ws/events"));
     }
 }

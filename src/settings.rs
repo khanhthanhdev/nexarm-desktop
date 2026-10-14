@@ -29,6 +29,8 @@ pub struct Settings {
     pub engine: crate::engine::supervisor::EngineSettings,
     /// GPU servers for remote training (Lab: Train).
     pub servers: Vec<crate::engine::api::RemoteServer>,
+    /// Address (host:port) of the station the Remote page last drove; its token is in the OS keychain.
+    pub remote_station: String,
 }
 
 /// Synchronizer page values (the original kept them in `sync_host_gui_config.json`).
@@ -60,6 +62,7 @@ impl Default for Settings {
             sync: SyncSettings::default(),
             engine: Default::default(),
             servers: Vec::new(),
+            remote_station: String::new(),
         }
     }
 }
@@ -114,6 +117,15 @@ pub fn load_wifi_password(ssid: &str) -> Option<String> {
     keyring::Entry::new(KEYRING_SERVICE, ssid).ok()?.get_password().ok()
 }
 
+/// Store a secret (a remote station's token) in the OS keychain under `label`; empty removes it.
+pub fn save_secret(label: &str, value: &str) -> anyhow::Result<()> {
+    save_wifi_password(label, value)
+}
+
+pub fn load_secret(label: &str) -> Option<String> {
+    load_wifi_password(label)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -132,6 +144,7 @@ mod tests {
             sync: SyncSettings { center_pos: 1000, selected_servo: 4, offsets: [-2047, -1, 0, 1, 2047, 5] },
             engine: crate::engine::supervisor::EngineSettings { profile: "bench".into(), ..Default::default() },
             servers: vec![crate::engine::api::RemoteServer { name: "gpu1".into(), host: "gpu.example.com".into(), user: "ubuntu".into(), ..Default::default() }],
+            remote_station: "100.64.0.7:8765".into(),
         };
         let back: Settings = serde_json::from_str(&serde_json::to_string(&s).unwrap()).unwrap();
         assert_eq!(back, s);

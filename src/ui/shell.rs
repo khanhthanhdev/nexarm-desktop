@@ -5,7 +5,7 @@ use super::log_panel::LogPanel;
 use super::pages::{
     ai::AiPage, coord::CoordPage, peripheral::PeripheralPage, servo::ServoPage, servo_adv::ServoAdvPage,
     lab_datasets::LabDatasetsPage, lab_deploy::LabDeployPage, lab_record::LabRecordPage, lab_session::LabSessionPage,
-    lab_train::LabTrainPage, sync::SyncPage,
+    lab_remote::LabRemotePage, lab_train::LabTrainPage, sync::SyncPage,
     system::SystemPage, teach::TeachPage,
 };
 use super::state::{AppState, ConnStatus, DeviceEvent};
@@ -21,7 +21,7 @@ use gpui_kit::component::{ActiveTheme as _, Disableable as _, Sizable as _, h_fl
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
 
-const NAV_KEYS: [&str; 13] = [
+const NAV_KEYS: [&str; 14] = [
     "tab_servo",
     "tab_coord",
     "tab_peripheral",
@@ -35,6 +35,7 @@ const NAV_KEYS: [&str; 13] = [
     "tab_lab_datasets",
     "tab_lab_train",
     "tab_lab_deploy",
+    "tab_lab_remote",
 ];
 /// Index of the first Lab page in [`NAV_KEYS`]; Lab pages live in `Shell::lab`.
 const LAB_FIRST: usize = 8;
@@ -93,6 +94,7 @@ impl Shell {
             cx.new(|cx| LabDatasetsPage::new(app.clone(), engine.clone(), window, cx)).into(),
             cx.new(|cx| LabTrainPage::new(app.clone(), engine.clone(), window, cx)).into(),
             cx.new(|cx| LabDeployPage::new(app.clone(), engine.clone(), window, cx)).into(),
+            cx.new(|cx| LabRemotePage::new(app.clone(), engine.clone(), window, cx)).into(),
         ];
         let log = cx.new(|cx| LogPanel::new(app.clone(), cx));
 

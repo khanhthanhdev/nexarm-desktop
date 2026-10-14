@@ -62,7 +62,10 @@ impl EventEmitter<EngineNote> for EngineState {}
 
 impl EngineState {
     pub fn new(app: Entity<AppState>, cx: &mut Context<Self>) -> Self {
-        let url = app.read(cx).settings.engine.url.clone();
+        let (url, token) = {
+            let e = &app.read(cx).settings.engine;
+            (e.url.clone(), e.token.clone())
+        };
         let (tx, rx) = flume::unbounded::<EngineEvent>();
         let pump = cx.spawn(async move |this: WeakEntity<EngineState>, cx: &mut AsyncApp| {
             while let Ok(first) = rx.recv_async().await {
@@ -74,7 +77,7 @@ impl EngineState {
         });
         Self {
             app,
-            client: EngineClient::new(url),
+            client: EngineClient::new(url).with_token(&token),
             status: EngineStatus::Unknown,
             profiles: Vec::new(),
             ports: Vec::new(),
@@ -148,7 +151,7 @@ impl EngineState {
             return;
         }
         let settings = self.app.read(cx).settings.engine.clone();
-        self.client = EngineClient::new(settings.url.clone());
+        self.client = EngineClient::new(settings.url.clone()).with_token(&settings.token);
         self.status = EngineStatus::Starting;
         cx.emit(EngineNote::Status);
         cx.notify();
@@ -190,6 +193,19 @@ impl EngineState {
 
     /// Stop the engine, but only one this app started.
     pub fn stop_engine(&mut self, cx: &mut Context<Self>) {
+        self.stop_then(false, cx);
+    }
+
+    /// Stop the engine this app started and start it again with the current settings (bind address, token).
+    pub fn restart_engine(&mut self, cx: &mut Context<Self>) {
+        if self.owns_engine() {
+            self.stop_then(true, cx);
+        } else {
+            self.connect_engine(cx);
+        }
+    }
+
+    fn stop_then(&mut self, reconnect: bool, cx: &mut Context<Self>) {
         if !self.owns_engine() {
             return;
         }
@@ -204,12 +220,15 @@ impl EngineState {
                     sup.stop(&client);
                 }
             },
-            |s, (), cx| {
+            move |s, (), cx| {
                 s.session = None;
                 s.release_handoff(Action::None, cx);
                 cx.emit(EngineNote::Status);
                 cx.emit(EngineNote::Session);
                 cx.notify();
+                if reconnect {
+                    s.connect_engine(cx);
+                }
             },
         );
     }
