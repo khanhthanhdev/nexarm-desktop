@@ -66,7 +66,7 @@ fn dataset_view_calls_decode() {
 fn the_event_stream_says_hello() {
     let c = client();
     let (tx, rx) = flume::unbounded();
-    let _listener = listen(c.events_url(), tx);
+    let _listener = listen(c.events_url(), c.token().map(str::to_string), tx);
     let first = rx.recv_timeout(Duration::from_secs(10)).expect("an event");
     assert_eq!(first, EngineEvent::Hello { api_version: API_VERSION.into() });
 }
@@ -85,7 +85,7 @@ fn a_token_protected_engine_refuses_callers_without_the_token() {
     assert_eq!(client.health().unwrap().api_version, API_VERSION);
 
     let (tx, rx) = flume::unbounded();
-    let _listener = listen(client.events_url(), tx);
+    let _listener = listen(client.events_url(), client.token().map(str::to_string), tx);
     let first = rx.recv_timeout(Duration::from_secs(10)).expect("an event");
     assert_eq!(first, EngineEvent::Hello { api_version: API_VERSION.into() });
 }

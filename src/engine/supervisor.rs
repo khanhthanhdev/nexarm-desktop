@@ -20,10 +20,25 @@ pub struct EngineSettings {
     /// Address the engine this app starts listens on. Loopback, except while this machine hosts a station
     /// for remote operators (then a LAN or tailnet address, or 0.0.0.0).
     pub bind_host: String,
-    /// Bearer token the app sends on every call. Required whenever `bind_host` is not loopback.
+    /// Bearer token the app sends on every call. Required whenever `bind_host` is not loopback. Kept in the OS
+    /// keychain (see `Settings::load` and `Settings::save`), never in `settings.json`.
+    #[serde(skip)]
     pub token: String,
     /// Name of the robot profile the Lab pages use.
     pub profile: String,
+}
+
+impl EngineSettings {
+    /// Where this app reaches the engine it starts. The URL setting names loopback; an engine bound to one
+    /// specific address (a tailnet or LAN IP) does not listen there, so the app uses that address instead.
+    pub fn client_url(&self) -> String {
+        let host = self.bind_host.trim();
+        if host.is_empty() || is_loopback_host(host) || host == "0.0.0.0" || host == "::" {
+            return self.url.clone();
+        }
+        let port = url_port(&self.url).unwrap_or(8765);
+        if host.contains(':') { format!("http://[{host}]:{port}") } else { format!("http://{host}:{port}") }
+    }
 }
 
 impl Default for EngineSettings {
@@ -279,5 +294,25 @@ mod tests {
         let settings = EngineSettings { bind_host: "0.0.0.0".into(), ..Default::default() };
         let err = Supervisor::default().spawn(&settings).unwrap_err().to_string();
         assert!(err.contains("needs a token"), "{err}");
+    }
+
+    #[test]
+    fn the_app_reaches_an_engine_bound_to_one_address_at_that_address() {
+        let on = |host: &str| EngineSettings { bind_host: host.into(), ..Default::default() };
+        // loopback and wildcard binds are reachable through the configured loopback URL
+        for h in ["", "127.0.0.1", "0.0.0.0", "::"] {
+            assert_eq!(on(h).client_url(), "http://127.0.0.1:8765", "{h}");
+        }
+        // a specific address is not listening on loopback
+        assert_eq!(on("100.64.0.7").client_url(), "http://100.64.0.7:8765");
+        assert_eq!(on("fd7a::1").client_url(), "http://[fd7a::1]:8765");
+        let custom = EngineSettings { url: "http://127.0.0.1:9100".into(), bind_host: "192.168.1.5".into(), ..Default::default() };
+        assert_eq!(custom.client_url(), "http://192.168.1.5:9100");
+    }
+
+    #[test]
+    fn the_token_is_never_written_to_the_settings_json() {
+        let s = EngineSettings { token: "s3cret".into(), ..Default::default() };
+        assert!(!serde_json::to_string(&s).unwrap().contains("s3cret"));
     }
 }

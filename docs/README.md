@@ -88,7 +88,7 @@ Setup: open **Lab: Session**, press **Connect**. With the default settings the a
 
 **Remote teleoperation.** On the station machine open Lab: Remote, set a listen address (your tailnet or LAN address) and press Apply: the engine restarts listening there and requires the generated token. Give the operator the shown address and the token. The operator enters them under "Operator" and presses Connect. Operator tokens are kept in the OS keychain.
 
-**Settings.** `settings.json` gains `engine` (url, start command, working folder, auto start, bind address, token, selected profile), `servers` and `remote_station`. Set `NEXARM_CONFIG_DIR` to use another settings folder.
+**Settings.** `settings.json` gains `engine` (url, start command, working folder, auto start, bind address, selected profile), `servers` and `remote_station`. The engine token and the station tokens are kept in the OS keychain, never in the file. Set `NEXARM_CONFIG_DIR` to use another settings folder (the keychain is then not used, which is what the UI tests rely on).
 
 Hardware checks that have not been run yet are in [`hardware-checklist.md`](hardware-checklist.md).
 

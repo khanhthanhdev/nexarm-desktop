@@ -64,7 +64,7 @@ impl EngineState {
     pub fn new(app: Entity<AppState>, cx: &mut Context<Self>) -> Self {
         let (url, token) = {
             let e = &app.read(cx).settings.engine;
-            (e.url.clone(), e.token.clone())
+            (e.client_url(), e.token.clone())
         };
         let (tx, rx) = flume::unbounded::<EngineEvent>();
         let pump = cx.spawn(async move |this: WeakEntity<EngineState>, cx: &mut AsyncApp| {
@@ -151,7 +151,7 @@ impl EngineState {
             return;
         }
         let settings = self.app.read(cx).settings.engine.clone();
-        self.client = EngineClient::new(settings.url.clone()).with_token(&settings.token);
+        self.client = EngineClient::new(settings.client_url()).with_token(&settings.token);
         self.status = EngineStatus::Starting;
         cx.emit(EngineNote::Status);
         cx.notify();
@@ -180,7 +180,7 @@ impl EngineState {
                     s.report(e, cx);
                 }
                 if s.is_ready() {
-                    s.listener = Some(events::listen(s.client.events_url(), s.events_tx.clone()));
+                    s.listener = Some(events::listen(s.client.events_url(), s.client.token().map(str::to_string), s.events_tx.clone()));
                     s.refresh(cx);
                 } else {
                     s.listener = None;

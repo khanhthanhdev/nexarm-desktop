@@ -183,10 +183,12 @@ impl EngineClient {
     /// WebSocket URL of the event stream.
     pub fn events_url(&self) -> String {
         let ws = self.base.replacen("http://", "ws://", 1).replacen("https://", "wss://", 1);
-        match &self.token {
-            Some(t) => format!("{ws}/api/v1/ws/events?token={}", encode_segment(t)),
-            None => format!("{ws}/api/v1/ws/events"),
-        }
+        format!("{ws}/api/v1/ws/events")
+    }
+
+    /// The bearer token, for the event stream (which sends it as a header).
+    pub fn token(&self) -> Option<&str> {
+        self.token.as_deref()
     }
 
     fn send(&self, agent: &ureq::Agent, route: Route, params: &[(&str, &str)], body: Option<Value>) -> Result<ureq::http::Response<ureq::Body>> {
@@ -492,7 +494,8 @@ mod tests {
         client.health().unwrap();
         let request = rx.recv().unwrap().to_ascii_lowercase();
         assert!(request.contains("authorization: bearer s3 cret"), "{request}");
-        assert!(client.events_url().ends_with("/api/v1/ws/events?token=s3%20cret"));
+        assert!(client.events_url().ends_with("/api/v1/ws/events"), "the token never goes in the URL");
+        assert_eq!(client.token(), Some("s3 cret"));
         // no token: no header and a plain event URL
         assert!(EngineClient::new(url).with_token("  ").events_url().ends_with("/api/v1/ws/events"));
     }

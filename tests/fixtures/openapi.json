@@ -104,6 +104,11 @@
             "title": "Excluded Episodes",
             "type": "integer"
           },
+          "fingerprint": {
+            "default": "",
+            "title": "Fingerprint",
+            "type": "string"
+          },
           "fps": {
             "title": "Fps",
             "type": "integer"
@@ -130,6 +135,11 @@
           "total_frames": {
             "title": "Total Frames",
             "type": "integer"
+          },
+          "transferred": {
+            "default": false,
+            "title": "Transferred",
+            "type": "boolean"
           }
         },
         "required": [
@@ -1572,7 +1582,7 @@
         ]
       },
       "put": {
-        "description": "Receive a dataset as a tar.gz body. Refuses a name that already exists; never overwrites.",
+        "description": "Receive a dataset as a tar.gz body.\n\nA name that already exists is refused, except with ``replace=true`` for a copy an earlier transfer\nwrote (``transferred`` in its summary): that is the engine's own cache of someone else's data, never\na dataset recorded here. The new copy is fully received and checked before the old one is swapped out.",
         "operationId": "upload_archive_api_v1_datasets__owner___name__archive_put",
         "parameters": [
           {
@@ -1591,6 +1601,16 @@
             "schema": {
               "title": "Name",
               "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "replace",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Replace",
+              "type": "boolean"
             }
           }
         ],
@@ -3251,7 +3271,7 @@
     },
     "/api/v1/shutdown": {
       "post": {
-        "description": "Ask the engine to exit gracefully (the lifespan hook stops any session and releases the arm).\n\nLoopback callers only: a remote-engine role must not be stoppable from the network.",
+        "description": "Ask the engine to exit gracefully (the lifespan hook stops any session and releases the arm).\n\nAn engine without a token only ever hears from loopback callers (it refuses to bind elsewhere), so\nthis is allowed from any caller that got past the auth middleware: a token holder may stop a station\nit can reach, and nobody else on the network can.",
         "operationId": "shutdown_api_v1_shutdown_post",
         "responses": {
           "202": {

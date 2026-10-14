@@ -68,18 +68,35 @@ impl Default for Settings {
 }
 
 impl Settings {
-    /// Load settings, falling back to defaults when the file is missing or unreadable.
+    /// Load settings, falling back to defaults when the file is missing or unreadable. The engine token
+    /// comes from the OS keychain, not the file.
     pub fn load() -> Settings {
-        std::fs::read_to_string(settings_path())
+        let mut s: Settings = std::fs::read_to_string(settings_path())
             .ok()
             .and_then(|s| serde_json::from_str(&s).ok())
-            .unwrap_or_default()
+            .unwrap_or_default();
+        if secrets_in_keychain() {
+            s.engine.token = load_secret(ENGINE_TOKEN_LABEL).unwrap_or_default();
+        }
+        s
     }
 
     pub fn save(&self) -> anyhow::Result<()> {
+        if secrets_in_keychain() {
+            save_secret(ENGINE_TOKEN_LABEL, &self.engine.token)?;
+        }
         std::fs::write(settings_path(), serde_json::to_string_pretty(self)?)?;
         Ok(())
     }
+}
+
+/// Keychain account holding the token of the engine this app starts.
+const ENGINE_TOKEN_LABEL: &str = "engine-token";
+
+/// The UI tests point `NEXARM_CONFIG_DIR` at a temporary folder; they must not read or overwrite the real
+/// user's keychain entries.
+fn secrets_in_keychain() -> bool {
+    std::env::var_os("NEXARM_CONFIG_DIR").is_none()
 }
 
 /// `<OS config dir>/NexArm` (or `$NEXARM_CONFIG_DIR`, which the UI tests use), created on demand.

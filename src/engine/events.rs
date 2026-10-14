@@ -93,8 +93,19 @@ const READ_POLL: Duration = Duration::from_millis(250);
 const RECONNECT_MIN: Duration = Duration::from_secs(1);
 const RECONNECT_MAX: Duration = Duration::from_secs(5);
 
+/// The WebSocket upgrade request with `Authorization: Bearer <token>`. The token goes in a header, not the
+/// URL, because query strings end up in access logs.
+pub fn authed_request(url: &str, token: Option<&str>) -> Option<tungstenite::handshake::client::Request> {
+    use tungstenite::client::IntoClientRequest as _;
+    let mut request = url.into_client_request().ok()?;
+    if let Some(t) = token.filter(|t| !t.is_empty()) {
+        request.headers_mut().insert("Authorization", format!("Bearer {t}").parse().ok()?);
+    }
+    Some(request)
+}
+
 /// Listen to `url` and forward parsed events, reconnecting with a bounded backoff until dropped.
-pub fn listen(url: String, out: flume::Sender<EngineEvent>) -> EventListener {
+pub fn listen(url: String, token: Option<String>, out: flume::Sender<EngineEvent>) -> EventListener {
     let stop = Arc::new(AtomicBool::new(false));
     let flag = stop.clone();
     std::thread::Builder::new()
@@ -102,7 +113,9 @@ pub fn listen(url: String, out: flume::Sender<EngineEvent>) -> EventListener {
         .spawn(move || {
             let mut backoff = RECONNECT_MIN;
             while !flag.load(Ordering::Relaxed) {
-                if let Ok((mut ws, _)) = tungstenite::connect(url.as_str()) {
+                if let Some(request) = authed_request(&url, token.as_deref())
+                    && let Ok((mut ws, _)) = tungstenite::connect(request)
+                {
                     backoff = RECONNECT_MIN;
                     set_poll_timeout(&mut ws);
                     if !pump(&mut ws, &flag, &out) || out.send(EngineEvent::Disconnected).is_err() {
@@ -200,5 +213,15 @@ mod tests {
         let mut names: Vec<&str> = schema.as_object().unwrap().keys().map(String::as_str).collect();
         names.sort_unstable();
         assert_eq!(names, ["coaching_state", "hello", "job_progress", "jobs_changed", "joint_update", "session_changed"]);
+    }
+
+    #[test]
+    fn the_token_goes_in_an_authorization_header_never_the_url() {
+        let r = authed_request("ws://127.0.0.1:8765/api/v1/ws/events", Some("s3cret")).unwrap();
+        assert_eq!(r.headers().get("Authorization").unwrap(), "Bearer s3cret");
+        assert!(!r.uri().to_string().contains("s3cret"));
+        let plain = authed_request("ws://127.0.0.1:8765/api/v1/ws/events", None).unwrap();
+        assert!(plain.headers().get("Authorization").is_none());
+        assert!(authed_request("not a url", Some("t")).is_none());
     }
 }
