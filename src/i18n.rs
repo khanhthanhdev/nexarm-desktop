@@ -35,7 +35,7 @@ fn lookup(lang: Lang, key: &str) -> Option<&'static serde_json::Value> {
     table().get(lang.code()).and_then(|m| m.get(key))
 }
 
-/// Lab pages keep their strings in separate files so the original client's table stays verbatim.
+/// Lab and Calibration pages keep their strings in separate files so the original client's table stays verbatim.
 const LAB_TABLES: &[&str] = &[
     include_str!("../assets/i18n/lab.json"),
     include_str!("../assets/i18n/lab_datasets.json"),
