@@ -723,8 +723,7 @@ impl Render for ServoPage {
         }).collect::<Vec<_>>());
 
         let control = section(t("grp_servo_ctrl"))
-            .flex_1()
-            .min_w(px(1000.))
+            .flex_none()
             .child(top)
             .child(h_flex().gap_3().items_start().child(picture).child(grid));
 
@@ -743,7 +742,6 @@ impl Render for ServoPage {
         }).collect::<Vec<_>>());
 
         let editor = section(t("grp_action_editor"))
-            .flex_1()
             .child(self.render_table(cx))
             .child(field(t("lbl_frame_time"), NumberInput::new(&self.delay).small(), cx))
             .child(div().text_xs().text_color(cx.theme().muted_foreground).child(t("lbl_action_speed_note")))
@@ -793,16 +791,14 @@ impl Render for ServoPage {
                     }))),
             );
 
-        h_flex()
+        v_flex()
             .id("servo-page")
             .size_full()
             .p_3()
             .gap_3()
-            .flex_wrap()
-            .items_start()
             .overflow_y_scroll()
             .child(control)
-            .child(v_flex().w(px(440.)).flex_none().gap_3().child(editor).child(run))
+            .child(h_flex().gap_3().items_start().child(editor.flex_1().min_w_0()).child(run.flex_1().min_w_0()))
     }
 }
 
