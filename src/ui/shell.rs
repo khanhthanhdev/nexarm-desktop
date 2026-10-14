@@ -3,7 +3,8 @@
 use super::engine_state::EngineState;
 use super::log_panel::LogPanel;
 use super::pages::{
-    ai::AiPage, calib::CalibPage, coord::CoordPage, peripheral::PeripheralPage, servo::ServoPage, servo_adv::ServoAdvPage,
+    ai::AiPage, calib::CalibPage, coord::CoordPage, guide::GuidePage, peripheral::PeripheralPage, servo::ServoPage,
+    servo_adv::ServoAdvPage,
     lab_datasets::LabDatasetsPage, lab_deploy::LabDeployPage, lab_record::LabRecordPage, lab_session::LabSessionPage,
     lab_remote::LabRemotePage, lab_train::LabTrainPage, sync::SyncPage,
     system::SystemPage, teach::TeachPage,
@@ -21,7 +22,7 @@ use gpui_kit::component::{ActiveTheme as _, Disableable as _, Sizable as _, h_fl
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
 
-const NAV_KEYS: [&str; 15] = [
+const NAV_KEYS: [&str; 16] = [
     "tab_servo",
     "tab_coord",
     "tab_peripheral",
@@ -37,13 +38,17 @@ const NAV_KEYS: [&str; 15] = [
     "tab_lab_train",
     "tab_lab_deploy",
     "tab_lab_remote",
+    "tab_guide",
 ];
 /// Index of the first Lab page in [`NAV_KEYS`]; Lab pages live in `Shell::lab`.
 const LAB_FIRST: usize = 9;
 /// Index of the Calibration page in [`NAV_KEYS`].
 const CALIB_IX: usize = 8;
+/// Index of the Guide page in [`NAV_KEYS`], after the Lab pages.
+const GUIDE_IX: usize = 15;
 /// Sidebar section headings: the index of each section's first page and its string key.
-const NAV_GROUPS: [(usize, &str); 3] = [(0, "nav_group_control"), (5, "nav_group_setup"), (LAB_FIRST, "nav_group_lab")];
+const NAV_GROUPS: [(usize, &str); 4] =
+    [(0, "nav_group_control"), (5, "nav_group_setup"), (LAB_FIRST, "nav_group_lab"), (GUIDE_IX, "nav_group_help")];
 const BAUDS: [u32; 11] = [9600, 19200, 38400, 57600, 76800, 115200, 128000, 250000, 500000, 1000000, 2000000];
 const ACCENT: u32 = 0xFA8F01;
 
@@ -57,6 +62,7 @@ struct Pages {
     teach: Entity<TeachPage>,
     sync: Entity<SyncPage>,
     calib: Entity<CalibPage>,
+    guide: Entity<GuidePage>,
 }
 
 pub struct Shell {
@@ -93,6 +99,7 @@ impl Shell {
             teach: cx.new(|cx| TeachPage::new(app.clone(), window, cx)),
             sync: cx.new(|cx| SyncPage::new(app.clone(), window, cx)),
             calib: cx.new(|cx| CalibPage::new(app.clone(), window, cx)),
+            guide: cx.new(|cx| GuidePage::new(app.clone(), window, cx)),
         };
         let engine = cx.new(|cx| EngineState::new(app.clone(), cx));
         let lab: Vec<AnyView> = vec![
@@ -269,6 +276,7 @@ impl Shell {
             6 => self.pages.teach.clone().into(),
             7 => self.pages.sync.clone().into(),
             CALIB_IX => self.pages.calib.clone().into(),
+            GUIDE_IX => self.pages.guide.clone().into(),
             i => self.lab[i - LAB_FIRST].clone(),
         }
     }

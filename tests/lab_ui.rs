@@ -7,7 +7,7 @@ use gpui::{AppContext as _, Entity, TestAppContext, VisualTestContext};
 use nexarm_desktop::ui::engine_state::{EngineNote, EngineState, EngineStatus, teleop_params};
 use nexarm_desktop::ui::pages::{
     lab_datasets::LabDatasetsPage, lab_deploy::LabDeployPage, lab_record::LabRecordPage, lab_remote::LabRemotePage,
-    lab_session::LabSessionPage,
+    guide::GuidePage, lab_session::LabSessionPage,
     lab_train::LabTrainPage,
 };
 use nexarm_desktop::ui::state::AppState;
@@ -262,4 +262,19 @@ fn a_refused_session_start_reports_the_error_and_frees_the_slot(cx: &mut TestApp
     fx.engine.update(vcx, |e, cx| e.start_session("teleoperation", teleop_params(), cx));
     settle(vcx, |_| mock.count("POST /api/v1/sessions ") == 2);
     assert_eq!(mock.count("POST /api/v1/sessions "), 2);
+}
+
+#[gpui::test]
+fn the_guide_page_renders_in_both_languages(cx: &mut TestAppContext) {
+    let mock = mock_engine(&base_routes());
+    let fx = fixture(cx, &mock.url);
+    let app = fx.app.clone();
+    let vcx = open(cx, move |window, cx| vec![cx.new(|cx| GuidePage::new(app.clone(), window, cx)).into()]);
+    draw(vcx);
+    let before = RENDERS.load(Ordering::Relaxed);
+    assert!(before > 0, "the guide was never drawn");
+
+    fx.app.update(vcx, |a, cx| a.toggle_lang(cx));
+    draw(vcx);
+    assert!(RENDERS.load(Ordering::Relaxed) > before, "the guide redraws when the language changes");
 }

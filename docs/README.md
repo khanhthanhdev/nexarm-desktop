@@ -102,6 +102,10 @@ Setup: open **Lab: Session**, press **Connect**. With the default settings the a
 
 Hardware checks that have not been run yet are in [`hardware-checklist.md`](hardware-checklist.md).
 
+## Guide page
+
+The **Guide** page, under **Help** in the sidebar, is the in-app documentation. Pick a topic on the left (Getting started, then one entry per page) to read what the page is, when to use it, how to use it step by step, and what to watch for. It works without a connection and follows the language setting. The text is in `assets/i18n/guide.json`, in English and Vietnamese. To document a new page, add a topic to `TOPICS` in `src/ui/pages/guide.rs` and its `guide_<id>_what`, `_when`, `_how` and `_tips` strings in both languages; a unit test fails if one is missing.
+
 ## Differences from the original
 
 - Received frames are checksum-checked; frames that fail are shown in red in the HEX log and are not acted on. The short checksum that the leader firmware uses for some replies is accepted.

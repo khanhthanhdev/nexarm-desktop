@@ -1,0 +1,466 @@
+{
+ "en": {
+  "nav_group_help": "Help",
+  "tab_guide": "Guide",
+  "guide_topics": "Topics",
+  "guide_what": "What it is",
+  "guide_when": "When to use it",
+  "guide_how": "How to use it",
+  "guide_tips": "Tips and cautions",
+  "guide_start_title": "Getting started",
+  "guide_start_what": "NexArm Desktop controls the NexArm robot arm over USB serial or WiFi. The sidebar lists every page in three groups: Control (day-to-day moves), Setup & calibration (servo and firmware tuning), and Lab (record data, train and run AI policies). The log under each page shows what is sent to and received from the arm.",
+  "guide_start_when": "Read this first, before you power the arm or open any other page.",
+  "guide_start_how": [
+   "Power the arm and plug in the USB cable, or join the arm's WiFi access point.",
+   "In the Connection panel at the bottom left, choose the method: Serial or WiFi.",
+   "Serial: pick the port (press Refresh if it is missing) and the baud rate. The default is 1,000,000.",
+   "WiFi: type or scan the arm's SSID, enter the password if there is one, then use the switch.",
+   "Flip the switch to ON. The dot turns green when the arm is connected.",
+   "Open a page from the sidebar. The page title above the content tells you where you are.",
+   "Use the Light/Dark button for the theme and the language button for English or Vietnamese."
+  ],
+  "guide_start_tips": [
+   "Servo IDs run 1 to 6 from the bottom of the arm to the top.",
+   "If the arm does not respond, check the port, the baud rate and that no other program is using the serial port.",
+   "Lab pages release the Connection panel while a session runs, because the session takes over the USB port. The panel reconnects afterwards.",
+   "Pages in the Control and Setup groups need the arm connected. The Guide page works at any time."
+  ],
+  "guide_servo_what": "Moves the arm with the joint sliders and plays back action groups: saved sequences of poses that can be loaded from a .d6a file, run, edited and downloaded to the board.",
+  "guide_servo_when": "Use it for everyday control: jogging single joints, going home, playing a saved routine, or building a new routine from poses.",
+  "guide_servo_how": [
+   "Connect the arm, then drag a joint slider to move that joint. Home All returns every joint to its centre.",
+   "Read Pos reads the current angle of the joints so you can start from where the arm really is.",
+   "Add the current pose to the action group, then repeat for each step of the routine. Use Move Up and Move Down to reorder and Delete to remove a step.",
+   "Set the time and acceleration of each step in the editor.",
+   "Run (Board) plays the group on the arm itself. Run Online (PC) streams it from this computer.",
+   "Save (.d6a) writes the group to a file and Load opens one. Download copies it to the board."
+  ],
+  "guide_servo_tips": [
+   "Speed is calculated by the app to fit the frame time, so tune time and acceleration, not speed.",
+   "Torque ON holds the joints. Torque OFF lets them go, so support the arm first.",
+   "E-Stop stops the arm at once."
+  ],
+  "guide_coord_what": "Moves the end of the arm by position instead of by joint angle. It shows the arm's pose, the 3D view and the forward and inverse kinematics (FK and IK) controls.",
+  "guide_coord_when": "Use it when you think in space: put the gripper at X, Y, Z, or nudge it a few millimetres, rather than working out joint angles.",
+  "guide_coord_how": [
+   "Press Get Current End-Effector Coords to read where the gripper is now.",
+   "Enter the target X, Y and Z, then press Send Coord. The arm solves the joint angles itself (IK).",
+   "For a small move, use Incremental Coord Control: set the step in millimetres and the time, then send the increment.",
+   "Press Home to return to the home pose.",
+   "Open the 3D View to watch the arm pose as you work."
+  ],
+  "guide_coord_tips": [
+   "A target outside the arm's reach cannot be solved. Move in smaller steps if the arm stops short.",
+   "The 3D View needs the Rerun viewer, version 0.38.1, on your PATH.",
+   "Coordinate limits for the app and gamepad are set on the System Settings page."
+  ],
+  "guide_peripheral_what": "Controls what is attached to the arm: the buzzer, the conveyor and stepper, and the Tank or Mecanum chassis, and reads the battery voltage.",
+  "guide_peripheral_when": "Use it to test an attachment, drive a chassis, or check the battery before a long run.",
+  "guide_peripheral_how": [
+   "Buzzer: set the frequency, on time, off time and count, then press Send.",
+   "Battery: press Read Battery Voltage.",
+   "Chassis: choose Tank or Mecanum, enter the speeds and send. Stop All halts every motor.",
+   "Chassis configuration: enter wheel diameter, wheel base and track width, then Write Chassis. Read Chassis shows what is stored.",
+   "Conveyor and stepper: enter the speed or the steps and send."
+  ],
+  "guide_peripheral_tips": [
+   "Wrong chassis dimensions make the chassis drive the wrong distance, so measure them and write them once.",
+   "Lift the chassis off the floor for the first test of a new setup."
+  ],
+  "guide_system_what": "Reads and writes the arm's system parameters: firmware versions, battery, motion limits, the kinematic parameters and the communication settings.",
+  "guide_system_when": "Use it after assembling or updating the arm, when changing limits, or when you need the firmware version for support.",
+  "guide_system_how": [
+   "Press Read Firmware Version to see the board and ESP32 versions.",
+   "Use the Read buttons next to a parameter to see its stored value.",
+   "Change the value and press Write or Set/Apply to store it on the arm.",
+   "Use App & Gamepad Limits to restrict how far the arm may be driven from the app or a gamepad."
+  ],
+  "guide_system_tips": [
+   "Read a value before you write it, so you can put it back.",
+   "Factory Reset erases the stored settings. Use it only when you mean to."
+  ],
+  "guide_ai_what": "Starts the AI play modes: color grab and tracking, face tracking, gesture recognition, AprilTag grab and tracking, waste sorting and an LLM mode. It also holds the visual offset calibration for the camera.",
+  "guide_ai_when": "Use it to demonstrate vision features, or to align the camera with the gripper before grabbing.",
+  "guide_ai_how": [
+   "Wait for the models to finish loading. The status shows the progress.",
+   "Pick a mode, for example Color Grab or Face Tracking, and start it.",
+   "Open Visual Offset Calibration to align the camera view with the gripper: start the alignment, test a grab, then reset or stop.",
+   "Stop the mode before you switch to another page or mode."
+  ],
+  "guide_ai_tips": [
+   "Good, even lighting improves recognition a lot.",
+   "Calibrate the offset once after the camera is moved.",
+   "Keep your hands clear of the gripper during grab tests."
+  ],
+  "guide_servo_adv_what": "Low-level settings for a single servo: ID, baud rate, position offset, PID, torque and overload protection, dead zone and acceleration.",
+  "guide_servo_adv_when": "Use it when you replace a servo, fix an offset, or tune how strongly or smoothly a joint moves.",
+  "guide_servo_adv_how": [
+   "Enter the Servo ID (1 to 6) of the servo you want to work on.",
+   "Press the Read button of a group to see the current values.",
+   "Edit the values and press the Write or Set button of that group.",
+   "To give a new servo its ID, enter the old ID and the new ID, then press Set ID.",
+   "Set Baud Rate and Set All change the serial speed of one servo or of all servos."
+  ],
+  "guide_servo_adv_tips": [
+   "Connect only one new servo when you change an ID, otherwise two servos will share it.",
+   "The follower arm's zero offsets are fixed here. The leader arm's are fixed on the Synchronizer page.",
+   "Change the baud rate of the arm only if you know the other devices will follow."
+  ],
+  "guide_teach_what": "Records and plays back movements you make by hand. Action Edit works on the arm's own memory, and Sync Teach works with the leader arm (the synchronizer).",
+  "guide_teach_when": "Use it when it is easier to show the arm a movement than to type poses.",
+  "guide_teach_how": [
+   "Press Enter Edit (or Enter Sync Teach).",
+   "Press Start Record, move the arm by hand through the movement, then press Stop Record.",
+   "Press Play to check the result and Stop Play to end it.",
+   "Query Status shows what state the arm is in.",
+   "Press Exit Edit when you are done. Clear removes the recorded data."
+  ],
+  "guide_teach_tips": [
+   "Support the arm when torque is released for recording.",
+   "Record short, slow movements first. They replay more reliably."
+  ],
+  "guide_sync_what": "Services the leader arm, the synchronizer board running the Nex_Arm_sys firmware. It also replaces the old sync_host_gui.exe service tool.",
+  "guide_sync_when": "Use it to prepare or repair the leader arm: reset servo baud rates, centre the servos, fix offsets, or move all servos together.",
+  "guide_sync_how": [
+   "Connect to the leader arm's board.",
+   "Quick Actions: set every servo's baud rate back to 1M, centre them, switch torque on or off for all, and read positions.",
+   "Offset tuning: Read All Offsets, edit a value (-2047 to 2047), then Write, or Zero All Offsets.",
+   "Multi-servo sync move sends one move to several servos at once, with a time and acceleration."
+  ],
+  "guide_sync_tips": [
+   "Calibrate All Centers is for the moment the leader arm is held at its centre pose.",
+   "Use it together with Lab: Session, which needs the leader to read well."
+  ],
+  "guide_calib_what": "A guided calibration for the follower arm: release the arm, set the centre of every joint, then record each joint's full range of motion. Results can be saved as profiles.",
+  "guide_calib_when": "Use it after assembly, after replacing a servo, or whenever the arm's zero position or travel no longer matches what you expect.",
+  "guide_calib_how": [
+   "Step 1, release the arm: turn torque off and support the arm, because it drops under its own weight.",
+   "Step 2, set the centre: hold every joint at its mid position, then press Set Centre. The offsets are read back from the servos.",
+   "Step 3, record the range: press Start Recording, move each joint by hand through its full travel, then Stop Recording.",
+   "Check the table: every joint should read OK. 'not moved' or 'centre outside range' means that joint needs another pass.",
+   "Give the profile a name and press Save. Load or Restore Offsets writes a saved profile back to the servos."
+  ],
+  "guide_calib_tips": [
+   "Do the steps in order. The centre must be set before the range is recorded.",
+   "Torque On after recording locks the arm in place again."
+  ],
+  "guide_session_what": "The starting point of the Lab. It connects to the lerobot-nexarm engine, stores robot profiles (ports and cameras), checks calibration and runs teleoperation with the leader arm driving the follower.",
+  "guide_session_when": "Use it first whenever you work with the Lab: before recording data, training, or deploying a policy.",
+  "guide_session_how": [
+   "In the Engine section press Connect. Tick 'Start the engine if none is running' to let the app launch it.",
+   "Create a robot profile: a name, the follower port, the leader port and any cameras. Press Save profile.",
+   "Place both arms by hand at the Home pose and press Check leader / follower. Nothing is energised.",
+   "Press Start teleoperation. Move the leader arm and the follower copies it.",
+   "Press Stop session when finished. The follower returns to its starting pose before torque is released."
+  ],
+  "guide_session_tips": [
+   "A session takes over the USB port, so the Connection panel on the left is released while it runs.",
+   "If the check shows a large difference, fix the offset on the Servo Advanced page (follower) or the Synchronizer page (leader).",
+   "Other Lab pages need the engine, so connect here first."
+  ],
+  "guide_record_what": "Records demonstrations as a dataset. Each episode is the leader arm driving the follower while the cameras and joints are saved.",
+  "guide_record_when": "Use it to collect training data for a task you want the arm to learn.",
+  "guide_record_how": [
+   "Connect to the engine and select a robot profile with cameras on the Session page.",
+   "Enter the dataset name as owner/name and a short task description.",
+   "Set the number of episodes, the episode time and the reset time.",
+   "Tick 'Add to an existing dataset' to continue an earlier one, then press Start recording.",
+   "During recording use Pause, Next episode, Re-record, Save and finish, or Stop (which drops the current take)."
+  ],
+  "guide_record_tips": [
+   "Use the reset time to put the scene back before the next episode.",
+   "A consistent, varied set of about ten or more good episodes trains better than many sloppy ones.",
+   "Re-record a take as soon as you make a mistake."
+  ],
+  "guide_datasets_what": "Browses and edits your datasets: open a dataset, view episodes with the camera frames and joint curves, exclude bad episodes, merge, split, rename and upload.",
+  "guide_datasets_when": "Use it after recording and before training, to clean the data, or to share a dataset.",
+  "guide_datasets_how": [
+   "Click a dataset's name to open it and see its episodes in the viewer.",
+   "Drag the slider to step through frames. The curve follows the slider.",
+   "Tick Exclude on a bad episode to hide it from training. Nothing is deleted.",
+   "To edit, enter a new dataset name as owner/name, select episodes with the left box, and press Delete selected episodes, Drop excluded episodes, Rename, Split train / val or Remove feature.",
+   "To merge, tick two or more datasets and press Merge checked.",
+   "Import from Hub and Upload to Hub move datasets to and from the Hugging Face Hub. Progress is listed under Operations."
+  ],
+  "guide_datasets_tips": [
+   "Every edit writes a new dataset and leaves the original untouched.",
+   "Excluding is reversible. Deleting episodes creates a new dataset without them."
+  ],
+  "guide_train_what": "Trains a policy with lerobot-train on a dataset, on this machine or on a GPU server, and shows the queue, the loss curve, the checkpoints and the log.",
+  "guide_train_when": "Use it after you have a clean dataset and want a policy the arm can run on its own.",
+  "guide_train_how": [
+   "Choose where to run: This machine, or a saved GPU server.",
+   "Pick the dataset and enter a policy type, for example act.",
+   "Set the steps, the batch size and how often to log and save.",
+   "Press Queue training. One job runs at a time; click a job to follow it.",
+   "Watch the loss curve fall, then take a checkpoint from the Checkpoints list.",
+   "For a GPU server: save it in the GPU servers section, press Test connection, then choose it in Run on."
+  ],
+  "guide_train_tips": [
+   "Episodes excluded on the Datasets page are skipped unless you untick the box.",
+   "Remote training uploads the dataset over SSH and brings the checkpoints back. Your SSH keys stay with your SSH agent.",
+   "A fresh Linux GPU server can be prepared with scripts/nexarm-gpu-bootstrap.sh."
+  ],
+  "guide_deploy_what": "Runs a trained policy on the arm. Rollout just runs it, Evaluate also records an eval dataset, and Coach lets you correct the policy by hand to collect corrections (DAgger).",
+  "guide_deploy_when": "Use it to try a checkpoint on the real arm, to measure how well it works, or to improve it with corrections.",
+  "guide_deploy_how": [
+   "Pick a mode: Rollout, Evaluate or Coach.",
+   "Choose a checkpoint or enter a Hub policy id.",
+   "Set the duration. For Evaluate, name the dataset owner/eval_name. For Coach, name a new corrections dataset.",
+   "Press Start. Loading a policy can take a while, and the page waits until the arm is ready.",
+   "In Coach, use Take over to correct by hand, Hand back to let the policy go on, Hold to pause and Reset to rest.",
+   "Press Stop and return to rest when finished."
+  ],
+  "guide_deploy_tips": [
+   "The engine refuses a checkpoint trained for another robot type.",
+   "Coach needs the leader arm: set its port in the robot profile.",
+   "Keep a hand near the power switch for the first runs."
+  ],
+  "guide_remote_what": "Drives a follower arm on another machine, with the leader arm on this one. One machine is the Station (the follower) and the other is the Operator (the leader).",
+  "guide_remote_when": "Use it for remote teleoperation, or to share one arm between people in different places.",
+  "guide_remote_how": [
+   "On the station machine, under Remote access, set the listen address to the tailnet or LAN address and press Apply and restart the engine.",
+   "Give the operator the station address and the token that the page shows.",
+   "On the station press Start hosting. The follower waits parked at rest.",
+   "On the operator machine enter the station as host:port and the token, then press Connect and drive.",
+   "Press Disconnect to stop. The station parks the arm again."
+  ],
+  "guide_remote_tips": [
+   "Use Block operators or Park now on the station if you need to stop remote control at once.",
+   "The station applies a speed limit and a soft start. It parks the arm if the link goes quiet.",
+   "By default the engine listens on this machine only. Use Back to this machine only to close it again."
+  ]
+ },
+ "vi": {
+  "nav_group_help": "Trợ giúp",
+  "tab_guide": "Hướng dẫn",
+  "guide_topics": "Chủ đề",
+  "guide_what": "Là gì",
+  "guide_when": "Khi nào dùng",
+  "guide_how": "Cách dùng",
+  "guide_tips": "Mẹo và lưu ý",
+  "guide_start_title": "Bắt đầu",
+  "guide_start_what": "NexArm Desktop điều khiển cánh tay robot NexArm qua cổng USB nối tiếp hoặc WiFi. Thanh bên chia các trang thành ba nhóm: Điều khiển (thao tác hằng ngày), Cài đặt & hiệu chuẩn (tinh chỉnh servo và firmware) và Lab (ghi dữ liệu, huấn luyện và chạy policy AI). Khung nhật ký dưới mỗi trang cho thấy dữ liệu gửi đến và nhận từ cánh tay.",
+  "guide_start_when": "Hãy đọc trước tiên, trước khi cấp nguồn cho cánh tay hoặc mở bất kỳ trang nào khác.",
+  "guide_start_how": [
+   "Cấp nguồn cho cánh tay rồi cắm cáp USB, hoặc kết nối vào điểm truy cập WiFi của cánh tay.",
+   "Ở bảng Kết nối phía dưới bên trái, chọn phương thức: Serial hoặc WiFi.",
+   "Serial: chọn cổng (bấm Làm mới nếu chưa thấy) và tốc độ baud. Mặc định là 1.000.000.",
+   "WiFi: nhập hoặc quét SSID của cánh tay, nhập mật khẩu nếu có, rồi dùng công tắc.",
+   "Bật công tắc sang ON. Chấm chuyển sang màu xanh khi đã kết nối.",
+   "Mở một trang từ thanh bên. Tiêu đề phía trên nội dung cho biết bạn đang ở đâu.",
+   "Dùng nút Sáng/Tối để đổi giao diện và nút ngôn ngữ để chuyển giữa tiếng Anh và tiếng Việt."
+  ],
+  "guide_start_tips": [
+   "ID servo đánh số từ 1 đến 6, từ dưới lên trên của cánh tay.",
+   "Nếu cánh tay không phản hồi, hãy kiểm tra cổng, tốc độ baud và chắc chắn không có chương trình khác đang dùng cổng nối tiếp.",
+   "Các trang Lab nhả bảng Kết nối trong lúc chạy phiên, vì phiên chiếm cổng USB. Bảng sẽ kết nối lại sau đó.",
+   "Các trang nhóm Điều khiển và Cài đặt cần kết nối với cánh tay. Trang Hướng dẫn dùng được bất cứ lúc nào."
+  ],
+  "guide_servo_what": "Di chuyển cánh tay bằng thanh trượt khớp và chạy các nhóm hành động: chuỗi tư thế đã lưu, có thể tải từ tệp .d6a, chạy, chỉnh sửa và tải xuống board.",
+  "guide_servo_when": "Dùng cho điều khiển hằng ngày: chỉnh từng khớp, về gốc, chạy một chuỗi đã lưu hoặc tạo chuỗi mới từ các tư thế.",
+  "guide_servo_how": [
+   "Kết nối cánh tay, rồi kéo thanh trượt khớp để di chuyển khớp đó. Về gốc tất cả đưa mọi khớp về giữa.",
+   "Đọc vị trí đọc góc hiện tại của các khớp để bạn bắt đầu từ vị trí thật của cánh tay.",
+   "Thêm tư thế hiện tại vào nhóm hành động, rồi lặp lại cho từng bước. Dùng Di chuyển lên, Di chuyển xuống để sắp xếp và Xóa để bỏ một bước.",
+   "Đặt thời gian và gia tốc của từng bước trong trình chỉnh sửa.",
+   "Chạy (trên board) chạy nhóm ngay trên cánh tay. Chạy trực tuyến (PC) truyền từ máy tính này.",
+   "Lưu (.d6a) ghi nhóm ra tệp và Tải tệp mở một tệp. Tải xuống chép nhóm vào board."
+  ],
+  "guide_servo_tips": [
+   "Tốc độ do ứng dụng tự tính cho khớp với thời gian khung, nên hãy chỉnh thời gian và gia tốc chứ không chỉnh tốc độ.",
+   "Bật mô-men giữ các khớp. Tắt mô-men thả các khớp, nên hãy đỡ cánh tay trước.",
+   "Dừng khẩn cấp dừng cánh tay ngay lập tức."
+  ],
+  "guide_coord_what": "Di chuyển đầu cuối của cánh tay theo vị trí thay vì theo góc khớp. Trang hiển thị tư thế cánh tay, chế độ xem 3D và các điều khiển động học thuận và nghịch (FK và IK).",
+  "guide_coord_when": "Dùng khi bạn nghĩ theo không gian: đặt gripper tại X, Y, Z hoặc nhích vài milimét, thay vì tự tính góc khớp.",
+  "guide_coord_how": [
+   "Bấm Lấy tọa độ đầu cuối hiện tại để đọc vị trí gripper lúc này.",
+   "Nhập X, Y, Z đích rồi bấm Gửi tọa độ. Cánh tay tự giải góc khớp (IK).",
+   "Với bước nhỏ, dùng Điều khiển tọa độ gia số: đặt bước theo milimét và thời gian, rồi gửi gia số.",
+   "Bấm Về gốc để trở về tư thế gốc.",
+   "Mở chế độ xem 3D để theo dõi tư thế cánh tay khi làm việc."
+  ],
+  "guide_coord_tips": [
+   "Đích nằm ngoài tầm với của cánh tay thì không giải được. Hãy đi từng bước nhỏ hơn nếu cánh tay dừng sớm.",
+   "Chế độ xem 3D cần trình xem Rerun phiên bản 0.38.1 có trong PATH.",
+   "Giới hạn tọa độ cho ứng dụng và tay cầm được đặt ở trang Cài đặt hệ thống."
+  ],
+  "guide_peripheral_what": "Điều khiển các thiết bị gắn vào cánh tay: còi, băng chuyền và động cơ bước, khung gầm Tank hoặc Mecanum, và đọc điện áp pin.",
+  "guide_peripheral_when": "Dùng để thử một thiết bị gắn thêm, lái khung gầm hoặc kiểm tra pin trước một lần chạy dài.",
+  "guide_peripheral_how": [
+   "Còi: đặt tần số, thời gian bật, thời gian tắt và số lần, rồi bấm Gửi.",
+   "Pin: bấm Đọc điện áp pin.",
+   "Khung gầm: chọn Tank hoặc Mecanum, nhập tốc độ rồi gửi. Dừng tất cả dừng mọi động cơ.",
+   "Cấu hình khung gầm: nhập đường kính bánh, chiều dài cơ sở và bề rộng bánh xe, rồi Ghi thông số khung gầm. Đọc thông số khung gầm cho thấy giá trị đang lưu.",
+   "Băng chuyền và động cơ bước: nhập tốc độ hoặc số bước rồi gửi."
+  ],
+  "guide_peripheral_tips": [
+   "Kích thước khung gầm sai làm khung gầm đi sai quãng đường, nên hãy đo và ghi một lần cho đúng.",
+   "Hãy nhấc khung gầm khỏi sàn trong lần thử đầu của một cấu hình mới."
+  ],
+  "guide_system_what": "Đọc và ghi các tham số hệ thống của cánh tay: phiên bản firmware, pin, giới hạn chuyển động, thông số động học và cài đặt giao tiếp.",
+  "guide_system_when": "Dùng sau khi lắp ráp hoặc cập nhật cánh tay, khi đổi giới hạn, hoặc khi cần phiên bản firmware để nhờ hỗ trợ.",
+  "guide_system_how": [
+   "Bấm Đọc phiên bản firmware để xem phiên bản của board và ESP32.",
+   "Dùng các nút Đọc cạnh một tham số để xem giá trị đang lưu.",
+   "Đổi giá trị rồi bấm Ghi hoặc Đặt/áp dụng để lưu vào cánh tay.",
+   "Dùng Giới hạn ứng dụng & tay cầm để giới hạn phạm vi điều khiển từ ứng dụng hoặc tay cầm."
+  ],
+  "guide_system_tips": [
+   "Hãy đọc giá trị trước khi ghi để có thể khôi phục.",
+   "Khôi phục cài đặt gốc xóa các cài đặt đã lưu. Chỉ dùng khi bạn thật sự muốn."
+  ],
+  "guide_ai_what": "Bật các chế độ chơi AI: gắp và bám theo màu, bám theo khuôn mặt, nhận diện cử chỉ, gắp và bám theo AprilTag, phân loại rác và chế độ LLM. Trang cũng chứa phần hiệu chỉnh độ lệch thị giác cho camera.",
+  "guide_ai_when": "Dùng để trình diễn tính năng thị giác, hoặc căn camera với gripper trước khi gắp.",
+  "guide_ai_how": [
+   "Đợi các mô hình tải xong. Trạng thái cho biết tiến độ.",
+   "Chọn một chế độ, ví dụ Gắp theo màu hoặc Bám theo khuôn mặt, rồi bắt đầu.",
+   "Mở Hiệu chỉnh độ lệch thị giác để căn hình camera với gripper: bắt đầu căn chỉnh, thử gắp, rồi đặt lại hoặc dừng.",
+   "Dừng chế độ trước khi chuyển sang trang hoặc chế độ khác."
+  ],
+  "guide_ai_tips": [
+   "Ánh sáng đều và tốt giúp nhận diện chính xác hơn nhiều.",
+   "Hãy hiệu chỉnh độ lệch một lần sau khi di chuyển camera.",
+   "Giữ tay tránh xa gripper trong lúc thử gắp."
+  ],
+  "guide_servo_adv_what": "Các cài đặt mức thấp cho một servo: ID, tốc độ baud, độ lệch vị trí, PID, mô-men và bảo vệ quá tải, vùng chết và gia tốc.",
+  "guide_servo_adv_when": "Dùng khi thay servo, sửa độ lệch, hoặc điều chỉnh độ mạnh và độ mượt của một khớp.",
+  "guide_servo_adv_how": [
+   "Nhập ID servo (1 đến 6) của servo bạn muốn làm việc.",
+   "Bấm nút Đọc của một nhóm để xem giá trị hiện tại.",
+   "Sửa giá trị rồi bấm nút Ghi hoặc Đặt của nhóm đó.",
+   "Để gán ID cho servo mới, nhập ID cũ và ID mới rồi bấm Đặt ID.",
+   "Đặt tốc độ baud và Đặt tất cả đổi tốc độ nối tiếp của một servo hoặc của mọi servo."
+  ],
+  "guide_servo_adv_tips": [
+   "Chỉ cắm một servo mới khi đổi ID, nếu không hai servo sẽ trùng ID.",
+   "Độ lệch điểm 0 của cánh tay follower được sửa ở đây. Của cánh tay leader được sửa ở trang Đồng bộ.",
+   "Chỉ đổi tốc độ baud của cánh tay khi bạn biết các thiết bị khác sẽ theo kịp."
+  ],
+  "guide_teach_what": "Ghi và phát lại các chuyển động bạn làm bằng tay. Chỉnh sửa hành động dùng bộ nhớ của chính cánh tay, còn Dạy đồng bộ làm việc với cánh tay leader (bộ đồng bộ).",
+  "guide_teach_when": "Dùng khi chỉ cho cánh tay một chuyển động dễ hơn là gõ từng tư thế.",
+  "guide_teach_how": [
+   "Bấm Vào chỉnh sửa (hoặc Vào dạy đồng bộ).",
+   "Bấm Bắt đầu ghi, dùng tay di chuyển cánh tay theo chuyển động, rồi bấm Dừng ghi.",
+   "Bấm Phát để kiểm tra kết quả và Dừng phát để kết thúc.",
+   "Truy vấn trạng thái cho biết cánh tay đang ở trạng thái nào.",
+   "Bấm Thoát chỉnh sửa khi xong. Xóa bỏ dữ liệu đã ghi."
+  ],
+  "guide_teach_tips": [
+   "Hãy đỡ cánh tay khi mô-men được nhả để ghi.",
+   "Hãy ghi các chuyển động ngắn và chậm trước. Chúng phát lại ổn định hơn."
+  ],
+  "guide_sync_what": "Bảo trì cánh tay leader, tức board đồng bộ chạy firmware Nex_Arm_sys. Trang cũng thay cho công cụ sync_host_gui.exe cũ.",
+  "guide_sync_when": "Dùng để chuẩn bị hoặc sửa cánh tay leader: đặt lại tốc độ baud servo, căn tâm servo, sửa độ lệch hoặc di chuyển mọi servo cùng lúc.",
+  "guide_sync_how": [
+   "Kết nối với board của cánh tay leader.",
+   "Thao tác nhanh: đặt lại tốc độ baud mọi servo về 1M, căn tâm, bật hoặc tắt mô-men tất cả và đọc vị trí.",
+   "Tinh chỉnh độ lệch: Đọc tất cả độ lệch, sửa một giá trị (-2047 đến 2047) rồi Ghi, hoặc Đưa tất cả độ lệch về 0.",
+   "Di chuyển đồng bộ nhiều servo gửi một lệnh đến nhiều servo cùng lúc, kèm thời gian và gia tốc."
+  ],
+  "guide_sync_tips": [
+   "Hiệu chỉnh tất cả tâm dùng khi cánh tay leader đang được giữ ở tư thế tâm.",
+   "Dùng cùng Lab: Phiên, vì phiên cần leader đọc chuẩn."
+  ],
+  "guide_calib_what": "Hiệu chuẩn có hướng dẫn cho cánh tay follower: nhả cánh tay, đặt tâm của mọi khớp, rồi ghi toàn bộ hành trình của từng khớp. Kết quả có thể lưu thành hồ sơ.",
+  "guide_calib_when": "Dùng sau khi lắp ráp, sau khi thay servo, hoặc khi vị trí 0 hay hành trình của cánh tay không còn đúng như mong đợi.",
+  "guide_calib_how": [
+   "Bước 1, nhả cánh tay: tắt mô-men và đỡ cánh tay, vì nó sẽ rơi theo trọng lượng.",
+   "Bước 2, đặt tâm: giữ mọi khớp ở vị trí giữa rồi bấm Đặt tâm. Độ lệch được đọc lại từ servo.",
+   "Bước 3, ghi hành trình: bấm Bắt đầu ghi, dùng tay di chuyển từng khớp hết hành trình, rồi Dừng ghi.",
+   "Xem bảng: mọi khớp nên hiện OK. 'chưa di chuyển' hoặc 'tâm nằm ngoài phạm vi' nghĩa là khớp đó cần làm lại.",
+   "Đặt tên hồ sơ và bấm Lưu. Tải hoặc Khôi phục độ lệch ghi hồ sơ đã lưu lại vào servo."
+  ],
+  "guide_calib_tips": [
+   "Làm đúng thứ tự. Phải đặt tâm trước khi ghi hành trình.",
+   "Bật mô-men sau khi ghi để khóa cánh tay lại."
+  ],
+  "guide_session_what": "Điểm bắt đầu của Lab. Trang kết nối với engine lerobot-nexarm, lưu hồ sơ robot (cổng và camera), kiểm tra hiệu chuẩn và chạy điều khiển từ xa với cánh tay leader điều khiển follower.",
+  "guide_session_when": "Dùng đầu tiên mỗi khi làm việc với Lab: trước khi ghi dữ liệu, huấn luyện hoặc triển khai policy.",
+  "guide_session_how": [
+   "Ở mục Engine bấm Kết nối. Chọn 'Khởi động engine nếu chưa chạy' để ứng dụng tự mở engine.",
+   "Tạo hồ sơ robot: tên, cổng follower, cổng leader và các camera. Bấm Lưu hồ sơ.",
+   "Đặt tay cả hai cánh tay ở tư thế Home rồi bấm Kiểm tra leader / follower. Không có gì được cấp điện.",
+   "Bấm Bắt đầu điều khiển từ xa. Di chuyển leader và follower sẽ làm theo.",
+   "Bấm Dừng phiên khi xong. Follower về tư thế ban đầu rồi mới nhả mô-men."
+  ],
+  "guide_session_tips": [
+   "Một phiên chiếm cổng USB, nên bảng Kết nối bên trái được nhả ra trong lúc chạy.",
+   "Nếu kiểm tra cho thấy chênh lệch lớn, hãy sửa độ lệch ở trang Servo nâng cao (follower) hoặc trang Đồng bộ (leader).",
+   "Các trang Lab khác cần engine, nên hãy kết nối ở đây trước."
+  ],
+  "guide_record_what": "Ghi các lần trình diễn thành một bộ dữ liệu. Mỗi tập là lúc cánh tay leader điều khiển follower trong khi camera và các khớp được lưu lại.",
+  "guide_record_when": "Dùng để thu thập dữ liệu huấn luyện cho một việc bạn muốn cánh tay học.",
+  "guide_record_how": [
+   "Kết nối engine và chọn hồ sơ robot có camera ở trang Phiên.",
+   "Nhập tên bộ dữ liệu dạng owner/name và mô tả ngắn cho nhiệm vụ.",
+   "Đặt số tập, thời gian mỗi tập và thời gian đặt lại.",
+   "Chọn 'Thêm vào bộ dữ liệu có sẵn' để ghi tiếp, rồi bấm Bắt đầu ghi.",
+   "Khi ghi, dùng Tạm dừng, Tập tiếp theo, Ghi lại, Lưu và kết thúc, hoặc Dừng (bỏ lần ghi hiện tại)."
+  ],
+  "guide_record_tips": [
+   "Dùng thời gian đặt lại để dọn cảnh trước tập tiếp theo.",
+   "Khoảng mười tập tốt trở lên, nhất quán và đa dạng, huấn luyện tốt hơn nhiều tập cẩu thả.",
+   "Hãy ghi lại ngay khi bạn mắc lỗi."
+  ],
+  "guide_datasets_what": "Duyệt và chỉnh sửa bộ dữ liệu: mở một bộ, xem các tập cùng khung hình camera và đường cong khớp, loại trừ tập xấu, gộp, tách, đổi tên và tải lên.",
+  "guide_datasets_when": "Dùng sau khi ghi và trước khi huấn luyện để làm sạch dữ liệu, hoặc để chia sẻ một bộ dữ liệu.",
+  "guide_datasets_how": [
+   "Bấm tên một bộ dữ liệu để mở và xem các tập trong trình xem.",
+   "Kéo thanh trượt để duyệt từng khung hình. Đường cong chạy theo thanh trượt.",
+   "Chọn Loại trừ ở tập xấu để ẩn nó khỏi huấn luyện. Không có gì bị xóa.",
+   "Để chỉnh sửa, nhập tên bộ mới dạng owner/name, chọn tập bằng ô bên trái, rồi bấm Xóa các tập đã chọn, Bỏ các tập bị loại trừ, Đổi tên, Tách train / val hoặc Xóa đặc trưng.",
+   "Để gộp, chọn hai bộ trở lên rồi bấm Gộp các bộ đã chọn.",
+   "Nhập từ Hub và Tải lên Hub chuyển bộ dữ liệu từ và lên Hugging Face Hub. Tiến độ được liệt kê ở mục Thao tác."
+  ],
+  "guide_datasets_tips": [
+   "Mọi thao tác chỉnh sửa đều ghi ra bộ dữ liệu mới và giữ nguyên bản gốc.",
+   "Loại trừ có thể hoàn tác. Xóa tập tạo ra bộ dữ liệu mới không có các tập đó."
+  ],
+  "guide_train_what": "Huấn luyện policy bằng lerobot-train trên một bộ dữ liệu, ngay trên máy này hoặc trên máy chủ GPU, và hiển thị hàng đợi, đường cong loss, các checkpoint và nhật ký.",
+  "guide_train_when": "Dùng khi bạn đã có bộ dữ liệu sạch và muốn có policy để cánh tay tự chạy.",
+  "guide_train_how": [
+   "Chọn nơi chạy: Máy này, hoặc một máy chủ GPU đã lưu.",
+   "Chọn bộ dữ liệu và nhập loại policy, ví dụ act.",
+   "Đặt số bước, kích thước batch và tần suất ghi nhật ký, lưu checkpoint.",
+   "Bấm Xếp hàng huấn luyện. Mỗi lúc chỉ chạy một tác vụ; bấm vào một tác vụ để theo dõi.",
+   "Theo dõi đường cong loss giảm, rồi lấy checkpoint từ danh sách Checkpoint.",
+   "Với máy chủ GPU: lưu nó ở mục Máy chủ GPU, bấm Kiểm tra kết nối, rồi chọn nó ở Chạy trên."
+  ],
+  "guide_train_tips": [
+   "Các tập bị loại trừ ở trang Bộ dữ liệu sẽ bị bỏ qua, trừ khi bạn bỏ chọn ô tương ứng.",
+   "Huấn luyện từ xa tải bộ dữ liệu lên qua SSH và mang checkpoint về. Khóa SSH vẫn do SSH agent của bạn giữ.",
+   "Máy chủ GPU Linux mới có thể được chuẩn bị bằng scripts/nexarm-gpu-bootstrap.sh."
+  ],
+  "guide_deploy_what": "Chạy policy đã huấn luyện trên cánh tay. Rollout chỉ chạy, Đánh giá còn ghi thêm một bộ dữ liệu eval, và Coach cho phép bạn sửa policy bằng tay để thu thập các lần hiệu chỉnh (DAgger).",
+  "guide_deploy_when": "Dùng để thử một checkpoint trên cánh tay thật, đo chất lượng, hoặc cải thiện nó bằng các lần hiệu chỉnh.",
+  "guide_deploy_how": [
+   "Chọn chế độ: Rollout, Đánh giá hoặc Coach.",
+   "Chọn một checkpoint hoặc nhập ID policy trên Hub.",
+   "Đặt thời lượng. Với Đánh giá, đặt tên bộ dữ liệu owner/eval_name. Với Coach, đặt tên bộ dữ liệu hiệu chỉnh mới.",
+   "Bấm Bắt đầu. Tải policy có thể mất một lúc, và trang sẽ đợi đến khi cánh tay sẵn sàng.",
+   "Trong Coach, dùng Tiếp quản để sửa bằng tay, Trả lại để policy chạy tiếp, Giữ để tạm dừng và Về nghỉ để về tư thế nghỉ.",
+   "Bấm Dừng và về nghỉ khi xong."
+  ],
+  "guide_deploy_tips": [
+   "Engine từ chối checkpoint được huấn luyện cho loại robot khác.",
+   "Coach cần cánh tay leader: hãy đặt cổng của nó trong hồ sơ robot.",
+   "Hãy để tay gần công tắc nguồn trong những lần chạy đầu."
+  ],
+  "guide_remote_what": "Điều khiển cánh tay follower ở máy khác, với cánh tay leader ở máy này. Một máy là Trạm (follower) và máy kia là Người điều khiển (leader).",
+  "guide_remote_when": "Dùng để điều khiển từ xa, hoặc để nhiều người ở các nơi khác nhau dùng chung một cánh tay.",
+  "guide_remote_how": [
+   "Trên máy trạm, ở mục Truy cập từ xa, đặt địa chỉ lắng nghe là địa chỉ tailnet hoặc LAN rồi bấm Áp dụng và khởi động lại engine.",
+   "Đưa cho người điều khiển địa chỉ trạm và token mà trang hiển thị.",
+   "Trên trạm bấm Bắt đầu lưu trữ. Follower đợi ở tư thế nghỉ.",
+   "Trên máy người điều khiển, nhập trạm dạng host:port và token, rồi bấm Kết nối và điều khiển.",
+   "Bấm Ngắt kết nối để dừng. Trạm đưa cánh tay về nghỉ."
+  ],
+  "guide_remote_tips": [
+   "Dùng Chặn người điều khiển hoặc Về nghỉ ngay trên trạm nếu cần dừng điều khiển từ xa ngay.",
+   "Trạm áp dụng giới hạn tốc độ và khởi động mềm. Nó đưa cánh tay về nghỉ nếu đường truyền im lặng.",
+   "Mặc định engine chỉ lắng nghe trên máy này. Dùng Quay lại chỉ máy này để đóng lại."
+  ]
+ }
+}

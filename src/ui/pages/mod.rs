@@ -16,3 +16,4 @@ pub mod lab_session;
 pub mod lab_train;
 pub mod teach;
 pub mod sync;
+pub mod guide;
