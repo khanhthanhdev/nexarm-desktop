@@ -615,7 +615,7 @@ impl ServoPage {
         let small = |s: &str| div().text_sm().text_color(theme.muted_foreground).child(s.to_string());
         v_flex()
             .flex_1()
-            .min_w(px(360.))
+            .min_w(px(260.))
             .gap_2()
             .p_3()
             .rounded_md()
@@ -647,9 +647,9 @@ impl ServoPage {
                 h_flex()
                     .gap_2()
                     .child(small("Acc:"))
-                    .child(div().w(px(130.)).child(NumberInput::new(&c.acc).small()))
+                    .child(div().w(px(95.)).child(NumberInput::new(&c.acc).small()))
                     .child(small("Spd:"))
-                    .child(div().w(px(140.)).child(NumberInput::new(&c.spd).small())),
+                    .child(div().w(px(95.)).child(NumberInput::new(&c.spd).small())),
             )
     }
 
@@ -711,11 +711,11 @@ impl Render for ServoPage {
             .child(btn("cali", "btn_cali_pos").on_click(cx.listener(|this, _, window, cx| this.calibrate(window, cx))));
 
         let picture = v_flex()
-            .w(px(220.))
+            .w(px(170.))
             .flex_none()
             .gap_2()
             .items_center()
-            .child(img(crate::assets_dir().join("0.842.png")).w(px(210.)).h(px(300.)).object_fit(ObjectFit::Contain))
+            .child(img(crate::assets_dir().join("0.842.png")).w(px(160.)).h(px(230.)).object_fit(ObjectFit::Contain))
             .child(div().text_sm().text_center().text_color(cx.theme().muted_foreground).child(t("hint_servo_id")));
 
         let grid = v_flex().flex_1().min_w_0().gap_2().children((0..3).map(|row| {
@@ -723,7 +723,8 @@ impl Render for ServoPage {
         }).collect::<Vec<_>>());
 
         let control = section(t("grp_servo_ctrl"))
-            .flex_none()
+            .flex_1()
+            .min_w_0()
             .child(top)
             .child(h_flex().gap_3().items_start().child(picture).child(grid));
 
@@ -797,8 +798,13 @@ impl Render for ServoPage {
             .p_3()
             .gap_3()
             .overflow_y_scroll()
-            .child(control)
-            .child(h_flex().gap_3().items_start().child(editor.flex_1().min_w_0()).child(run.flex_1().min_w_0()))
+            .child(
+                h_flex()
+                    .gap_3()
+                    .items_start()
+                    .child(control)
+                    .child(v_flex().w(px(360.)).flex_none().gap_3().child(editor).child(run)),
+            )
     }
 }
 
