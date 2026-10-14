@@ -11,6 +11,7 @@ dirs = "6"
 flume = "0.11"
 glam = "0.30"
 gpui-kit = "0.7.3"
+image = { version = "0.25", default-features = false, features = ["jpeg"] }
 keyring = "4.2"
 rerun = { version = "0.38.1", default-features = false, features = ["sdk"] }
 roxmltree = "0.21"

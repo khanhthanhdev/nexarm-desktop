@@ -54,6 +54,8 @@ pub struct EngineState {
     events_tx: flume::Sender<EngineEvent>,
     _pump: Task<()>,
     _heartbeat: Option<Task<()>>,
+    /// Re-reads the live session status (phase, frame counts) once a second while one runs.
+    _poll: Option<Task<()>>,
 }
 
 impl EventEmitter<EngineNote> for EngineState {}
@@ -86,6 +88,7 @@ impl EngineState {
             events_tx: tx,
             _pump: pump,
             _heartbeat: None,
+            _poll: None,
         }
     }
 
@@ -406,6 +409,7 @@ impl EngineState {
                 self.session = Some(info);
                 if new {
                     self.start_heartbeat(id, cx);
+                    self.start_poll(cx);
                 }
             }
             None if self.session.is_some() => self.on_session_idle(cx),
@@ -419,6 +423,7 @@ impl EngineState {
     fn on_session_idle(&mut self, cx: &mut Context<Self>) {
         self.session = None;
         self._heartbeat = None;
+        self._poll = None;
         let action = self.handoff.on_session_state("idle");
         self.release_handoff(action, cx);
     }
@@ -427,6 +432,26 @@ impl EngineState {
         if let Action::ReclaimLinks(specs) = action {
             self.app.update(cx, |a, cx| a.reclaim_links(specs, cx));
         }
+    }
+
+    fn start_poll(&mut self, cx: &mut Context<Self>) {
+        self._poll = Some(cx.spawn(async move |this: WeakEntity<EngineState>, cx: &mut AsyncApp| {
+            loop {
+                cx.background_executor().timer(std::time::Duration::from_secs(1)).await;
+                let keep = this
+                    .update(cx, |s, cx| {
+                        let active = s.session.is_some();
+                        if active && !s.busy {
+                            s.refresh_session(cx);
+                        }
+                        active
+                    })
+                    .unwrap_or(false);
+                if !keep {
+                    return;
+                }
+            }
+        }));
     }
 
     /// Keep the session's lease alive; the engine safety-stops a session whose client goes silent.
@@ -501,6 +526,7 @@ impl EngineState {
                     s.status = EngineStatus::Failed("the engine stopped answering".into());
                     s.session = None;
                     s._heartbeat = None;
+                    s._poll = None;
                     let action = s.handoff.on_engine_gone();
                     s.release_handoff(action, cx);
                     cx.emit(EngineNote::Status);

@@ -4,7 +4,8 @@ use super::engine_state::EngineState;
 use super::log_panel::LogPanel;
 use super::pages::{
     ai::AiPage, coord::CoordPage, peripheral::PeripheralPage, servo::ServoPage, servo_adv::ServoAdvPage,
-    lab_session::LabSessionPage, sync::SyncPage, system::SystemPage, teach::TeachPage,
+    lab_datasets::LabDatasetsPage, lab_record::LabRecordPage, lab_session::LabSessionPage, sync::SyncPage,
+    system::SystemPage, teach::TeachPage,
 };
 use super::state::{AppState, ConnStatus, DeviceEvent};
 use super::widgets::{self, StrSelect};
@@ -19,7 +20,7 @@ use gpui_kit::component::{ActiveTheme as _, Disableable as _, Sizable as _, h_fl
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
 
-const NAV_KEYS: [&str; 9] = [
+const NAV_KEYS: [&str; 11] = [
     "tab_servo",
     "tab_coord",
     "tab_peripheral",
@@ -29,6 +30,8 @@ const NAV_KEYS: [&str; 9] = [
     "tab_teach",
     "tab_sync",
     "tab_lab_session",
+    "tab_lab_record",
+    "tab_lab_datasets",
 ];
 /// Index of the first Lab page in [`NAV_KEYS`]; Lab pages live in `Shell::lab`.
 const LAB_FIRST: usize = 8;
@@ -81,7 +84,11 @@ impl Shell {
             sync: cx.new(|cx| SyncPage::new(app.clone(), window, cx)),
         };
         let engine = cx.new(|cx| EngineState::new(app.clone(), cx));
-        let lab: Vec<AnyView> = vec![cx.new(|cx| LabSessionPage::new(app.clone(), engine.clone(), window, cx)).into()];
+        let lab: Vec<AnyView> = vec![
+            cx.new(|cx| LabSessionPage::new(app.clone(), engine.clone(), window, cx)).into(),
+            cx.new(|cx| LabRecordPage::new(app.clone(), engine.clone(), window, cx)).into(),
+            cx.new(|cx| LabDatasetsPage::new(app.clone(), engine.clone(), window, cx)).into(),
+        ];
         let log = cx.new(|cx| LogPanel::new(app.clone(), cx));
 
         let method_ix = if s.method == ConnMethod::Wifi { 1 } else { 0 };

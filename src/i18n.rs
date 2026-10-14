@@ -35,14 +35,22 @@ fn lookup(lang: Lang, key: &str) -> Option<&'static serde_json::Value> {
     table().get(lang.code()).and_then(|m| m.get(key))
 }
 
+/// Lab pages keep their strings in separate files so the original client's table stays verbatim.
+const LAB_TABLES: &[&str] = &[
+    include_str!("../assets/i18n/lab.json"),
+    include_str!("../assets/i18n/lab_datasets.json"),
+    include_str!("../assets/i18n/lab_record.json"),
+];
+
 fn table() -> &'static Table {
     static T: OnceLock<Table> = OnceLock::new();
     T.get_or_init(|| {
         let mut table: Table = serde_json::from_str(include_str!("../assets/i18n/strings.json")).expect("valid strings.json");
-        // Lab pages keep their strings in a separate file so the original client's table stays verbatim.
-        let lab: Table = serde_json::from_str(include_str!("../assets/i18n/lab.json")).expect("valid lab.json");
-        for (lang, entries) in lab {
-            table.entry(lang).or_default().extend(entries);
+        for src in LAB_TABLES {
+            let lab: Table = serde_json::from_str(src).expect("valid lab string file");
+            for (lang, entries) in lab {
+                table.entry(lang).or_default().extend(entries);
+            }
         }
         table
     })

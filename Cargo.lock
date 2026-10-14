@@ -4850,6 +4850,7 @@ dependencies = [
  "flume 0.11.1",
  "glam",
  "gpui-kit",
+ "image",
  "keyring",
  "rerun",
  "roxmltree 0.21.1",
