@@ -154,6 +154,7 @@ mod tests {
     fn settings_json_round_trip() {
         let s = Settings {
             lang: "en".into(),
+            theme: "dark".into(),
             method: ConnMethod::Wifi,
             serial_port: Some("COM5".into()),
             baud: 115_200,
