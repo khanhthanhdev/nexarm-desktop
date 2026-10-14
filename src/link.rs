@@ -1,5 +1,6 @@
 //! Serial / TCP transport. A reader thread decodes frames and reports [`LinkEvent`]s.
 
+use crate::engine::handoff::LinkSpec;
 use crate::protocol::{Decoded, Decoder, Frame, Request, printable_text};
 use anyhow::Context as _;
 use std::io::{ErrorKind, Read, Write};
@@ -29,6 +30,9 @@ pub struct Link {
     stop: Arc<AtomicBool>,
     events: flume::Sender<LinkEvent>,
     pub description: String,
+    /// How to reopen this link after a handoff.
+    pub spec: LinkSpec,
+    reader: Mutex<Option<std::thread::JoinHandle<()>>>,
 }
 
 const POLL: Duration = Duration::from_millis(10);
@@ -48,7 +52,8 @@ impl Link {
             .open()
             .with_context(|| format!("cannot open {port} (busy or no permission?)"))?;
         let reader = sp.try_clone().context("cannot clone serial handle")?;
-        Ok(Self::start(Box::new(sp), reader, format!("{port} @ {baud}"), events))
+        let spec = LinkSpec::Serial { port: port.to_string(), baud };
+        Ok(Self::start(Box::new(sp), reader, spec, events))
     }
 
     pub fn open_tcp(host: &str, port: u16, events: flume::Sender<LinkEvent>) -> anyhow::Result<Link> {
@@ -61,18 +66,20 @@ impl Link {
         s.set_nodelay(true)?;
         s.set_read_timeout(Some(POLL))?;
         let reader = s.try_clone()?;
-        Ok(Self::start(Box::new(s), reader, format!("{host}:{port}"), events))
+        let spec = LinkSpec::Tcp { host: host.to_string(), port };
+        Ok(Self::start(Box::new(s), reader, spec, events))
     }
 
     fn start(
         writer: Box<dyn Write + Send>,
         mut reader: impl Read + Send + 'static,
-        description: String,
+        spec: LinkSpec,
         events: flume::Sender<LinkEvent>,
     ) -> Link {
         let stop = Arc::new(AtomicBool::new(false));
+        let description = spec.label();
         let (stop2, ev) = (stop.clone(), events.clone());
-        std::thread::Builder::new()
+        let reader_thread = std::thread::Builder::new()
             .name("nexarm-rx".into())
             .spawn(move || {
                 let mut dec = Decoder::default();
@@ -104,7 +111,7 @@ impl Link {
                 let _ = ev.send(LinkEvent::Closed(reason));
             })
             .expect("spawn reader thread");
-        Link { writer: Arc::new(Mutex::new(writer)), stop, events, description }
+        Link { writer: Arc::new(Mutex::new(writer)), stop, events, description, spec, reader: Mutex::new(Some(reader_thread)) }
     }
 
     pub fn send(&self, req: &Request) -> anyhow::Result<()> {
@@ -120,6 +127,19 @@ impl Link {
 
     pub fn close(&self) {
         self.stop.store(true, Ordering::Relaxed);
+    }
+
+    /// Close and wait until the OS handle is really released: stop the reader thread and drop the writer.
+    /// The engine opens the same port next, so "asked to close" is not enough.
+    pub fn close_and_wait(&self) {
+        self.close();
+        if let Ok(mut w) = self.writer.lock() {
+            *w = Box::new(std::io::sink());
+        }
+        let handle = self.reader.lock().ok().and_then(|mut g| g.take());
+        if let Some(h) = handle {
+            let _ = h.join();
+        }
     }
 }
 
@@ -158,5 +178,21 @@ mod tests {
         assert!(evs.iter().any(|e| matches!(e, LinkEvent::Tx(_))));
         assert!(evs.iter().any(|e| matches!(e, LinkEvent::Text(t) if t.contains("boot ok"))));
         assert!(evs.iter().any(|e| matches!(e, LinkEvent::Frame(f) if parse(f) == Some(Response::Battery(10000)))));
+    }
+
+    #[test]
+    fn close_and_wait_really_releases_the_connection() {
+        let srv = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = srv.local_addr().unwrap().port();
+        let (tx, _rx) = flume::unbounded();
+        let link = Link::open_tcp("127.0.0.1", port, tx).unwrap();
+        let (mut peer, _) = srv.accept().unwrap();
+        assert_eq!(link.spec, LinkSpec::Tcp { host: "127.0.0.1".into(), port });
+
+        link.close_and_wait();
+        // Both the writer and the reader's clone are gone, so the peer sees the end of the stream.
+        peer.set_read_timeout(Some(Duration::from_secs(2))).unwrap();
+        let mut b = [0u8; 1];
+        assert_eq!(peer.read(&mut b).unwrap(), 0);
     }
 }

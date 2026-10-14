@@ -1,5 +1,6 @@
 //! Shared application state: connection, device events, log, language, 3D viewer.
 
+use crate::engine::handoff::{LinkSpec, RECLAIM_ATTEMPTS, reclaim_delay};
 use crate::i18n::{Lang, tr};
 use crate::kinematics::ArmModel;
 use crate::link::{Link, LinkEvent};
@@ -267,6 +268,65 @@ impl AppState {
             }
             Link::open_tcp(&host, port, events)
         });
+    }
+
+    // ------------------------------------------------- engine link handoff
+
+    /// Close every link this app holds and wait until the OS handles are released, so the engine can
+    /// open the same ports. Returns how to reopen them.
+    pub fn release_for_session(&mut self, cx: &mut Context<Self>) -> Vec<LinkSpec> {
+        let mut released = Vec::new();
+        if let Some(link) = self.link.take() {
+            link.close_and_wait();
+            released.push(link.spec.clone());
+            self.log_text(format!("Info: released {} for the engine", link.spec.label()), cx);
+        }
+        self.mark_disconnected(cx);
+        released
+    }
+
+    /// Reopen links released for a session, retrying while the COM port re-enumerates.
+    pub fn reclaim_links(&mut self, specs: Vec<LinkSpec>, cx: &mut Context<Self>) {
+        // The app holds one link at a time; reclaim the first.
+        let Some(spec) = specs.into_iter().next() else { return };
+        if self.link.is_some() {
+            return;
+        }
+        self.status = ConnStatus::Connecting(spec.label());
+        cx.notify();
+        let events = self.events.clone();
+        cx.spawn(async move |this: WeakEntity<AppState>, cx: &mut AsyncApp| {
+            for attempt in 0..RECLAIM_ATTEMPTS {
+                cx.background_executor().timer(reclaim_delay(attempt)).await;
+                let (spec, events) = (spec.clone(), events.clone());
+                let res = cx
+                    .background_executor()
+                    .spawn(async move {
+                        match &spec {
+                            LinkSpec::Serial { port, baud } => Link::open_serial(port, *baud, events),
+                            LinkSpec::Tcp { host, port } => Link::open_tcp(host, *port, events),
+                        }
+                    })
+                    .await;
+                if let Ok(link) = res {
+                    let _ = this.update(cx, |s, cx| s.on_opened(Ok(link), cx));
+                    return;
+                }
+            }
+            let label = spec.label();
+            let _ = this.update(cx, |s, cx| {
+                s.status = ConnStatus::Disconnected;
+                s.log_text(format!("Connection Error: could not reopen {label} after the session; connect again by hand"), cx);
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    /// Show a pose streamed by the engine (raw ticks) in the 3D view and on the pages.
+    pub fn push_pose_ticks(&mut self, ticks: [f64; 6]) {
+        let servos = ticks.map(|t| t.round().clamp(0.0, 4095.0) as i16);
+        self.update_viewer(servos);
     }
 
     fn open_with(

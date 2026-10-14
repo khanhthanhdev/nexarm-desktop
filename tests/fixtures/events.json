@@ -1,0 +1,34 @@
+{
+  "coaching_state": {
+    "corrections": "integer",
+    "intervening": "boolean",
+    "phase": "string"
+  },
+  "hello": {
+    "api_version": "string"
+  },
+  "job_progress": {
+    "id": "string",
+    "loss": "number, when logged",
+    "lr": "number, when logged",
+    "step": "integer",
+    "total_steps": "integer"
+  },
+  "jobs_changed": {
+    "id": "string",
+    "kind": "train | operation",
+    "state": "string"
+  },
+  "joint_update": {
+    "radians": "object: joint name -> radians for the five arm joints (number)",
+    "ticks": "object: joint name -> raw servo ticks (number)"
+  },
+  "session_changed": {
+    "episodes_recorded": "integer, recording sessions only",
+    "error": "string or null",
+    "id": "string",
+    "kind": "string, absent on the idle event",
+    "state": "starting | running | stopping | stopped | failed | idle",
+    "stop_reason": "string or null"
+  }
+}

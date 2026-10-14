@@ -38,7 +38,13 @@ fn lookup(lang: Lang, key: &str) -> Option<&'static serde_json::Value> {
 fn table() -> &'static Table {
     static T: OnceLock<Table> = OnceLock::new();
     T.get_or_init(|| {
-        serde_json::from_str(include_str!("../assets/i18n/strings.json")).expect("valid strings.json")
+        let mut table: Table = serde_json::from_str(include_str!("../assets/i18n/strings.json")).expect("valid strings.json");
+        // Lab pages keep their strings in a separate file so the original client's table stays verbatim.
+        let lab: Table = serde_json::from_str(include_str!("../assets/i18n/lab.json")).expect("valid lab.json");
+        for (lang, entries) in lab {
+            table.entry(lang).or_default().extend(entries);
+        }
+        table
     })
 }
 
@@ -74,5 +80,39 @@ mod tests {
         assert_eq!(tr(Lang::Vi, "msg_error"), "Lỗi");
         assert_eq!(tr(Lang::Vi, "missing_key"), "missing_key");
         assert_eq!(tr_list(Lang::En, "joint_names").len(), 6);
+    }
+
+    /// Every `lab_*` / `tab_lab_*` key the Lab code mentions must exist in both languages.
+    #[test]
+    fn lab_keys_used_in_source_are_translated() {
+        fn walk(dir: &std::path::Path, out: &mut Vec<String>) {
+            for entry in std::fs::read_dir(dir).unwrap().flatten() {
+                let path = entry.path();
+                if path.is_dir() {
+                    walk(&path, out);
+                } else if path.extension().is_some_and(|e| e == "rs") {
+                    out.push(std::fs::read_to_string(&path).unwrap());
+                }
+            }
+        }
+        let mut sources = Vec::new();
+        walk(&std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src"), &mut sources);
+        let mut used = std::collections::BTreeSet::new();
+        for src in &sources {
+            for part in src.split('"').skip(1).step_by(2) {
+                let is_key = (part.starts_with("lab_") || part.starts_with("tab_lab_"))
+                    && part.chars().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '_');
+                if is_key {
+                    used.insert(part.to_string());
+                }
+            }
+        }
+        assert!(used.len() > 10, "found only {} lab keys", used.len());
+        let t = table();
+        for key in used {
+            for lang in ["en", "vi"] {
+                assert!(t[lang].contains_key(&key), "missing {lang} string for {key}");
+            }
+        }
     }
 }

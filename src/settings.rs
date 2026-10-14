@@ -26,6 +26,7 @@ pub struct Settings {
     /// Global motion acceleration from the System page (1..=254).
     pub move_acc: u8,
     pub sync: SyncSettings,
+    pub engine: crate::engine::supervisor::EngineSettings,
 }
 
 /// Synchronizer page values (the original kept them in `sync_host_gui_config.json`).
@@ -55,6 +56,7 @@ impl Default for Settings {
             wifi_port: 8080,
             move_acc: 254,
             sync: SyncSettings::default(),
+            engine: Default::default(),
         }
     }
 }
@@ -122,6 +124,7 @@ mod tests {
             wifi_port: 9000,
             move_acc: 100,
             sync: SyncSettings { center_pos: 1000, selected_servo: 4, offsets: [-2047, -1, 0, 1, 2047, 5] },
+            engine: crate::engine::supervisor::EngineSettings { profile: "bench".into(), ..Default::default() },
         };
         let back: Settings = serde_json::from_str(&serde_json::to_string(&s).unwrap()).unwrap();
         assert_eq!(back, s);

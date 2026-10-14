@@ -1,3 +1,4 @@
+pub mod engine;
 pub mod i18n;
 pub mod kinematics;
 pub mod link;

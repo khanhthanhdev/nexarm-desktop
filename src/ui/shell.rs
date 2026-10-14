@@ -1,9 +1,10 @@
 //! Main window: sidebar (logo, page list, connection panel, language) + page area + log.
 
+use super::engine_state::EngineState;
 use super::log_panel::LogPanel;
 use super::pages::{
     ai::AiPage, coord::CoordPage, peripheral::PeripheralPage, servo::ServoPage, servo_adv::ServoAdvPage,
-    sync::SyncPage, system::SystemPage, teach::TeachPage,
+    lab_session::LabSessionPage, sync::SyncPage, system::SystemPage, teach::TeachPage,
 };
 use super::state::{AppState, ConnStatus, DeviceEvent};
 use super::widgets::{self, StrSelect};
@@ -18,8 +19,19 @@ use gpui_kit::component::{ActiveTheme as _, Disableable as _, Sizable as _, h_fl
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
 
-const NAV_KEYS: [&str; 8] =
-    ["tab_servo", "tab_coord", "tab_peripheral", "tab_system", "tab_ai", "tab_servo_adv", "tab_teach", "tab_sync"];
+const NAV_KEYS: [&str; 9] = [
+    "tab_servo",
+    "tab_coord",
+    "tab_peripheral",
+    "tab_system",
+    "tab_ai",
+    "tab_servo_adv",
+    "tab_teach",
+    "tab_sync",
+    "tab_lab_session",
+];
+/// Index of the first Lab page in [`NAV_KEYS`]; Lab pages live in `Shell::lab`.
+const LAB_FIRST: usize = 8;
 const BAUDS: [u32; 11] = [9600, 19200, 38400, 57600, 76800, 115200, 128000, 250000, 500000, 1000000, 2000000];
 const ACCENT: u32 = 0xFA8F01;
 
@@ -38,6 +50,7 @@ pub struct Shell {
     app: Entity<AppState>,
     nav: usize,
     pages: Pages,
+    lab: Vec<AnyView>,
     log: Entity<LogPanel>,
     method: Entity<StrSelect>,
     port: Entity<StrSelect>,
@@ -67,6 +80,8 @@ impl Shell {
             teach: cx.new(|cx| TeachPage::new(app.clone(), window, cx)),
             sync: cx.new(|cx| SyncPage::new(app.clone(), window, cx)),
         };
+        let engine = cx.new(|cx| EngineState::new(app.clone(), cx));
+        let lab: Vec<AnyView> = vec![cx.new(|cx| LabSessionPage::new(app.clone(), engine.clone(), window, cx)).into()];
         let log = cx.new(|cx| LogPanel::new(app.clone(), cx));
 
         let method_ix = if s.method == ConnMethod::Wifi { 1 } else { 0 };
@@ -119,6 +134,7 @@ impl Shell {
             app,
             nav: 0,
             pages,
+            lab,
             log,
             method,
             port,
@@ -227,7 +243,8 @@ impl Shell {
             4 => self.pages.ai.clone().into(),
             5 => self.pages.servo_adv.clone().into(),
             6 => self.pages.teach.clone().into(),
-            _ => self.pages.sync.clone().into(),
+            7 => self.pages.sync.clone().into(),
+            i => self.lab[i - LAB_FIRST].clone(),
         }
     }
 

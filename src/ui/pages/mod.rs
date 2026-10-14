@@ -6,5 +6,6 @@ pub mod peripheral;
 pub mod system;
 pub mod ai;
 pub mod servo_adv;
+pub mod lab_session;
 pub mod teach;
 pub mod sync;

@@ -17,6 +17,8 @@ roxmltree = "0.21"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 serialport = "4.10"
+tungstenite = { version = "0.30.0", default-features = false, features = ["handshake"] }
+ureq = { version = "3", features = ["json"] }
 
 [profile.dev.package."*"]
 opt-level = 2

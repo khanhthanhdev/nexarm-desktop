@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+# Refresh the engine contract copies used by tests/engine_contract.rs from a lerobot-nexarm checkout.
+# usage: scripts/sync-engine-contract [path-to-lerobot-nexarm]   (default: ../../lerobot-nexarm)
+set -eu
+src="${1:-$(dirname "$0")/../../../lerobot-nexarm}/docs/service"
+dst="$(dirname "$0")/../tests/fixtures"
+for f in openapi.json events.json; do
+  cp "$src/$f" "$dst/$f"
+  echo "updated $dst/$f"
+done
